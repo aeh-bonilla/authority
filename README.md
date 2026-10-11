@@ -4,6 +4,21 @@ Authory es un protocolo y plataforma web para creadores que permite registrar ob
 
 ---
 
+## Stack Tecnológico
+
+La aplicación web está desarrollada con las siguientes tecnologías:
+
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
+- **Biblioteca de UI:** [React 19](https://react.dev/)
+- **Lenguaje:** [TypeScript 5](https://www.typescriptlang.org/)
+- **Estilos:** [Tailwind CSS 4](https://tailwindcss.com/)
+- **Manejo y Validación de Formularios:** [React Hook Form](https://react-hook-form.com/) y [Zod](https://zod.dev/) (`@hookform/resolvers`)
+- **Iconografía:** [Lucide React](https://lucide.dev/)
+- **Linter:** [ESLint](https://eslint.org/)
+- **Integración Blockchain (Simulación):** Stellar Testnet (simulador conceptual en memoria y `localStorage`)
+
+---
+
 ## Estructura del Repositorio
 
 - **`frontend/`**: Aplicación web construida con Next.js 16 (App Router), React 19 y Tailwind CSS 4. Consulta el [Frontend README](frontend/README.md).
@@ -16,9 +31,20 @@ Authory es un protocolo y plataforma web para creadores que permite registrar ob
 
 ## Ejecución Rápida
 
+La aplicación web se encuentra en el directorio `frontend/`. Para instalar las dependencias y ejecutar el servidor de desarrollo:
+
 ```bash
+# 1. Navegar al directorio de la aplicación frontend
 cd frontend
-npm ci
+
+# 2. Instalar las dependencias del proyecto
+npm install
+
+# 3. Iniciar el servidor de desarrollo
 npm run dev
 ```
-Accede a `http://localhost:3000` en tu navegador.
+
+> **Nota:** Para entornos de integración continua o instalaciones exactas basadas en el archivo lockfile, también puedes utilizar `npm ci`.
+
+Una vez iniciado el servidor, accede a [http://localhost:3000](http://localhost:3000) en tu navegador.
+
