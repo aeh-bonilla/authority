@@ -16,12 +16,14 @@ Aplicación frontend de Authory desarrollada con Next.js 16 (App Router, Turbopa
 Desde la raíz del repositorio o dentro de `frontend`:
 
 ```bash
-# Navegar al directorio frontend
+# Navegar al directorio frontend (si estás en la raíz)
 cd frontend
 
 # Instalar dependencias
-npm ci
+npm install
 ```
+
+> **Nota:** También puedes usar `npm ci` para instalaciones limpias basadas estrictamente en `package-lock.json`.
 
 ---
 
