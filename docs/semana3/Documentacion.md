@@ -74,7 +74,7 @@ Para verificar visualmente la interfaz construida, se levantó el frontend en mo
 
 ### 4. Verificación Pública de Obra (`/verificar`)
 ![Verificación Pública](./screenshots/04_verificacion.png)
-*Módulo de verificación pública con soporte de búsqueda por Authory ID y/o hash simulado de 64 dígitos hexadecimales con copy explícito de entorno de demostración.*
+*Módulo de verificación pública (definición funcional y especificación atribuida a Owen Isaac Bailón Cruz) con soporte de búsqueda por Authory ID y/o hash simulado de 64 dígitos hexadecimales con copy explícito de entorno de demostración.*
 
 ### 5. Registro de Licencias y Cesiones (`/obra/[id]/derechos`)
 ![Registro de Derechos](./screenshots/05_derechos_licencia.png)
@@ -153,11 +153,11 @@ Las contribuciones se documentan a partir de la evidencia verificable registrada
 | **Alain Einstein Hussein Bonilla Cordero** | `aeh-bonilla` | **Semana 1:** Propuesta individual de problema en Problem Brief.<br>**Semana 2:** Historias de usuario, diseño del diagrama de arquitectura inicial con integración Stellar y redacción de secciones de arquitectura y uso de Stellar en Product Blueprint.<br>**Semana 3:** Elaboración del Plan de Implementación de Frontend 02 (`Authory_Frontend02_Implementation_Plan_Antigravity.md`), handoff operativo, implementación de Frontend 02 (persistencia con validación de contrato, 3 rutas nuevas `/verificar`, `/derechos`, `/historial`, certificado demo HTML, copy honesto, suite de pruebas `focal-cases.test.mjs`, QA en navegador, captura de screenshots y consolidación de documentación; PR #9 mergeado a `main`). | Commits `0cba060`, `8154ed3`, `4a2f9d4`, `ce81280`, `46ba427`, PR #9 (`8829d03`). |
 | **Milvia Selene Escalona Ángeles** | `mescalona16-creator` / `Angeles-23` | **Semana 1:** Autora de la propuesta ganadora seleccionada para el proyecto en el Problem Brief.<br>**Semana 2:** Propuesta de historias de usuario (verificación de notario/auditor), elaboración e integración del Lean Canvas en Figma/GitHub para Product Blueprint.<br>**Semana 3:** Definición y propuesta de la decisión técnica de Stellar/Soroban para Authory: selección de smart contract propio minimalista en Soroban (patrón Registry/Attestation) frente a estándares de NFT/SEP-41 del ecosistema, documentando alcance de funciones (`register_work`, `record_rights_event`), justificación de rapidez de desarrollo y alternativas descartadas. | Commits `dc3fbcb`, `1384afb`, `aed333a`, `39d779c`; propuesta técnica de integración Soroban documentada en `docs/semana3/`. |
 | **Rodrigo Ramírez** | `Rodrigo-IRS` | **Semana 1:** Propuesta individual de problema en Problem Brief.<br>**Semana 2:** Elaboración de historias de usuario individuales (incluyendo las 3 historias centrales del MVP: registro, verificación y constancia de cesión/licencia) y revisión de criterios de priorización en Product Blueprint.<br>**Semana 3:** *Por confirmar* (sin commits ni PRs registrados en el repositorio para Frontend 02). | Commits `4e83177`, `ccf063b`, `6bdb36f`, `c94ec9c`. |
-| **Owen Isaac Bailón Cruz** | `OwenIBC` | **Semana 1:** Propuesta individual de problema.<br>**Semana 2:** Elaboración de historias de usuario individuales y revisión de la definición y justificación de alcance del MVP en Product Blueprint.<br>**Semana 3:** *Por confirmar* (sin commits ni PRs registrados en el repositorio para Frontend 02). | Commits `2db5275`, `7b9c835`, `91351e9`, `e7eb75b`. |
+| **Owen Isaac Bailón Cruz** | `OwenIBC` | **Semana 1:** Propuesta individual de problema.<br>**Semana 2:** Elaboración de historias de usuario individuales y revisión de la definición y justificación de alcance del MVP en Product Blueprint.<br>**Semana 3:** Definición funcional, diseño de interacción y especificación de casos de auditoría para el módulo de Verificación Pública de Obra (`/verificar`), incluyendo la validación combinada de Authory ID y hash simulado, el manejo de búsquedas en curso y los avisos de demostración local. | Commits `2db5275`, `7b9c835`, `91351e9`, `e7eb75b`; especificación funcional de verificación documentada en `docs/semana3/`. |
 
 ### Datos Faltantes por Confirmar para Completar esta Sección:
-1. Confirmación de las actividades, revisiones o contribuciones específicas de Semana 3 realizadas por Rodrigo Ramírez y Owen Isaac Bailón.
-2. Confirmación de si dichos integrantes cuentan con documentos individuales de Semana 3 en sus ramas locales para agregarlos al directorio `docs/semana3/`.
+1. Confirmación de las actividades, revisiones o contribuciones específicas de Semana 3 realizadas por Rodrigo Ramírez.
+2. Confirmación de si dicho integrante cuenta con documento individual de Semana 3 en su rama local para agregarlo al directorio `docs/semana3/`.
 
 ---
 
