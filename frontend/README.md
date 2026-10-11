@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Authory — Frontend
 
-## Getting Started
+Aplicación frontend de Authory desarrollada con Next.js 16 (App Router, Turbopack), React 19, TypeScript y Tailwind CSS 4. Permite a creadores registrar obras, generar referencias verificables de autoría, gestionar licencias de derechos y consultar el historial cronológico y trazabilidad sobre una simulación de Stellar Testnet.
 
-First, run the development server:
+---
+
+## Requisitos del Entorno
+
+- **Node.js**: Versión `22.23.3` (fijada en el archivo `.nvmrc` en la raíz del proyecto).
+- **Gestor de paquetes**: `npm` exclusivamente (evitar otros gestores para mantener consistencia con el lockfile).
+
+---
+
+## Instalación y Configuración
+
+Desde la raíz del repositorio o dentro de `frontend`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Navegar al directorio frontend
+cd frontend
+
+# Instalar dependencias
+npm ci
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts Disponibles
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **`npm run dev`**: Inicia el servidor de desarrollo en `http://localhost:3000`.
+- **`npm run build`**: Compila y optimiza la aplicación para producción utilizando Turbopack.
+- **`npm start`**: Inicia el servidor optimizado de producción.
+- **`npm run lint`**: Ejecuta las reglas de análisis estático con ESLint.
+- **`npx tsc --noEmit`**: Comprueba la tipificación estricta de TypeScript.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Estructura de Rutas y Funcionalidades
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **`/`**: Inicio y presentación general.
+2. **`/registrar-obra`**: Formulario de registro de obra, captura de metadatos (sin serializar archivos binarios) y generación de evidencia.
+3. **`/obra/[id]`**: Detalle de obra registrada, consulta de evidencia simulada, descarga de certificado HTML y copia de enlace.
+4. **`/verificar`**: Verificación pública por Authory ID o hash simulado de 64 caracteres.
+5. **`/obra/[id]/derechos`**: Registro formal de licencias de uso y cesiones de derechos.
+6. **`/obra/[id]/historial`**: Línea de tiempo cronológica auditable con todos los eventos de la obra.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Alcance y Simulación (Mock)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Red Stellar**: La integración con Stellar Testnet opera como un simulador en memoria y `localStorage` para esta entrega de demostración.
+- **Privacidad**: El contenido original de los archivos nunca se sube a servidores ni se serializa en el almacenamiento del navegador; únicamente se conservan metadatos.
+- Para más detalles sobre decisiones de arquitectura y limitaciones, consulta `docs/semana3/Documentacion.md`.

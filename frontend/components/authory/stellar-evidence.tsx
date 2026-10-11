@@ -36,7 +36,7 @@ export function StellarEvidence({ evidence, className = "" }: StellarEvidencePro
           <dd className="mt-1 font-ui text-xs leading-4 text-ink">STELLAR {evidence.network.toUpperCase()}</dd>
         </div>
         <div className="border-b-2 border-border p-2.5 sm:border-r-2">
-          <dt className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/60">HASH SHA-256</dt>
+          <dt className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/60">HASH SIMULADO</dt>
           <dd className="mt-1 line-clamp-2 break-all font-ui text-[11px] leading-4 text-ink" title={evidence.hash}>
             {evidence.hash}
           </dd>

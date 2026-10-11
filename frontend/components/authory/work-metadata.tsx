@@ -43,9 +43,13 @@ export function WorkMetadata({ work, className = "" }: WorkMetadataProps) {
         <div className="border-b-2 border-r-2 border-border p-3 sm:col-span-2">
           <dt className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/60">ENLACE DE ORIGEN</dt>
           <dd className="mt-2 break-all font-ui text-xs leading-5">
-            <a className="underline decoration-2 underline-offset-4" href={work.sourceUrl} rel="noreferrer" target="_blank">
-              {work.sourceUrl}
-            </a>
+            {/^https?:\/\//i.test(work.sourceUrl) ? (
+              <a className="underline decoration-2 underline-offset-4" href={work.sourceUrl} rel="noreferrer" target="_blank">
+                {work.sourceUrl}
+              </a>
+            ) : (
+              <span className="text-ink/80">{work.sourceUrl}</span>
+            )}
           </dd>
         </div>
       ) : null}
