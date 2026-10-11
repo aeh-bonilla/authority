@@ -13,6 +13,7 @@ let sequence = 0;
 
 const evidenceByWorkId = new Map<string, StellarEvidence>();
 const evidenceByHash = new Map<string, StellarEvidence>();
+const rightsEvidenceByHash = new Map<string, StellarEvidence>();
 
 function createHexValue(length: number): string {
   sequence += 1;
@@ -48,35 +49,13 @@ function waitForMockLedger(): Promise<void> {
 
 function getVerificationInput(input: string | VerificationInput): VerificationInput {
   if (typeof input === "string") {
-    return input.length === 64 ? { hash: input } : { workId: input };
-  }
-
-  return input;
-}
-
-function getStoredWorkEvidence(
-  workId?: string,
-  hash?: string,
-): StellarEvidence | undefined {
-  const work = getWork();
-  const matchesWork = workId === work.id || hash === work.hash;
-
-  if (
-    !matchesWork ||
-    !work.hash ||
-    !work.stellarTransactionId ||
-    !work.registeredAt
-  ) {
-    return undefined;
+    const trimmed = input.trim();
+    return trimmed.length === 64 ? { hash: trimmed.toLowerCase() } : { workId: trimmed };
   }
 
   return {
-    workId: work.id,
-    hash: work.hash,
-    transactionId: work.stellarTransactionId,
-    network: work.network,
-    registeredAt: work.registeredAt,
-    status: "confirmed",
+    ...(input.workId ? { workId: input.workId.trim() } : {}),
+    ...(input.hash ? { hash: input.hash.trim().toLowerCase() } : {}),
   };
 }
 
@@ -115,25 +94,81 @@ export async function createMockEvidence(work: Work): Promise<StellarEvidence> {
 export async function verifyMockEvidence(
   input: string | VerificationInput,
 ): Promise<VerificationResult> {
+  await waitForMockLedger();
   const { workId, hash } = getVerificationInput(input);
-  const evidence =
-    (workId ? evidenceByWorkId.get(workId) : undefined) ??
-    (hash ? evidenceByHash.get(hash) : undefined) ??
-    getStoredWorkEvidence(workId, hash);
 
-  if (!evidence) {
+  // Reject rights event hashes when verifying works
+  if (hash && rightsEvidenceByHash.has(hash)) {
     return {
       verified: false,
-      message: "No matching evidence was found in the mocked Stellar Testnet.",
+      hash,
+      message:
+        "El hash ingresado corresponde a un registro de derechos o licencia, no a la evidencia principal de una obra.",
     };
   }
 
+  const work = getWork();
+
+  // Strict match rules:
+  // If both workId and hash are supplied, BOTH must match the active work.
+  if (workId && hash) {
+    if (work.id !== workId || work.hash?.toLowerCase() !== hash) {
+      return {
+        verified: false,
+        workId,
+        hash,
+        message:
+          "El identificador y el hash no corresponden a la misma obra en el registro local.",
+      };
+    }
+  } else if (workId) {
+    if (work.id !== workId) {
+      return {
+        verified: false,
+        workId,
+        message:
+          "No se encontró evidencia para el Authory ID proporcionado en el registro local.",
+      };
+    }
+  } else if (hash) {
+    if (work.hash?.toLowerCase() !== hash) {
+      return {
+        verified: false,
+        hash,
+        message:
+          "No se encontró evidencia para el hash simulado proporcionado en el registro local.",
+      };
+    }
+  } else {
+    return {
+      verified: false,
+      message: "Indica un Authory ID o un hash simulado para verificar.",
+    };
+  }
+
+  if (!work.hash || !work.stellarTransactionId || !work.registeredAt) {
+    return {
+      verified: false,
+      workId: work.id,
+      message: "La obra no cuenta con evidencia completa registrada en el entorno simulado.",
+    };
+  }
+
+  const evidence: StellarEvidence = {
+    workId: work.id,
+    hash: work.hash,
+    transactionId: work.stellarTransactionId,
+    network: work.network,
+    registeredAt: work.registeredAt,
+    status: "confirmed",
+  };
+
   return {
-    verified: evidence.status === "confirmed",
-    workId: evidence.workId,
-    hash: evidence.hash,
+    verified: true,
+    workId: work.id,
+    hash: work.hash,
     evidence,
-    message: "Evidence verified against the mocked Stellar Testnet.",
+    message: "Evidencia verificada exitosamente en la simulación de Stellar Testnet.",
   };
 }
 
@@ -142,15 +177,16 @@ export async function createMockRightsEvidence(
 ): Promise<StellarEvidence> {
   await waitForMockLedger();
 
-  return storeEvidence(
-    {
-      workId: event.workId,
-      hash: generateMockHash(),
-      transactionId: generateMockTransactionId(),
-      network: testnet,
-      registeredAt: new Date().toISOString(),
-      status: "confirmed",
-    },
-    false,
-  );
+  const hash = generateMockHash();
+  const evidence: StellarEvidence = {
+    workId: event.workId,
+    hash,
+    transactionId: generateMockTransactionId(),
+    network: testnet,
+    registeredAt: new Date().toISOString(),
+    status: "confirmed",
+  };
+
+  rightsEvidenceByHash.set(hash, evidence);
+  return evidence;
 }

@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Download, Copy, Check } from "lucide-react";
 
 import { StellarEvidence } from "@/components/authory/stellar-evidence";
 import { BrutalistButton } from "@/components/ui/brutalist-button";
 import { Panel } from "@/components/ui/panel";
 import { StatusBadge, type StatusBadgeVariant } from "@/components/ui/status-badge";
+import { downloadDemoCertificate } from "@/lib/demo-certificate";
 import { getWork } from "@/lib/storage";
 import type { StellarEvidence as StellarEvidenceRecord } from "@/types/stellar";
 import type { Work, WorkStatus, WorkType } from "@/types/work";
@@ -109,14 +111,18 @@ function MetadataGrid({ work }: { work: Work }) {
         <div className="border-b-2 border-r-2 border-border p-2.5 sm:col-span-2">
           <dt className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/60">ENLACE DE ORIGEN</dt>
           <dd className="mt-1 break-all font-ui text-xs leading-4 text-ink" title={work.sourceUrl}>
-            <a
-              className="underline decoration-2 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
-              href={work.sourceUrl}
-              rel="noreferrer"
-              target="_blank"
-            >
-              {work.sourceUrl}
-            </a>
+            {/^https?:\/\//i.test(work.sourceUrl) ? (
+              <a
+                className="underline decoration-2 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
+                href={work.sourceUrl}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {work.sourceUrl}
+              </a>
+            ) : (
+              <span className="text-ink/80">{work.sourceUrl}</span>
+            )}
           </dd>
         </div>
       ) : null}
@@ -127,6 +133,8 @@ function MetadataGrid({ work }: { work: Work }) {
 export function WorkDetail({ workId }: WorkDetailProps) {
   const [work, setWork] = useState<Work | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const [showFallback, setShowFallback] = useState(false);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -176,6 +184,25 @@ export function WorkDetail({ workId }: WorkDetailProps) {
 
   const evidence = getEvidence(work);
 
+  const verificationUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/verificar?workId=${encodeURIComponent(work.id)}`
+      : `/verificar?workId=${encodeURIComponent(work.id)}`;
+
+  const handleCopyLink = async () => {
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(verificationUrl);
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 2500);
+      } else {
+        setShowFallback(true);
+      }
+    } catch {
+      setShowFallback(true);
+    }
+  };
+
   return (
     <section aria-labelledby="work-title" className="mx-auto -mt-4 w-full max-w-7xl sm:-mt-6">
       <div className="flex flex-wrap items-start justify-between gap-3 border-l-2 border-border pl-4 sm:pl-6">
@@ -220,14 +247,20 @@ export function WorkDetail({ workId }: WorkDetailProps) {
         )}
       </div>
 
-      <section aria-labelledby="work-actions-title" className="mt-4 border-t-2 border-border pt-3">
-        <h2
-          className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/65"
-          id="work-actions-title"
-        >
-          ACCIONES
-        </h2>
-        <div className="mt-2 flex flex-wrap gap-2">
+      <section aria-labelledby="work-actions-title" className="mt-6 border-t-2 border-border pt-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2
+            className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/65"
+            id="work-actions-title"
+          >
+            ACCIONES DE LA OBRA
+          </h2>
+          <p className="font-ui text-[10px] text-ink/60">
+            Demostración local: los registros se conservan en este navegador y origen.
+          </p>
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-2.5">
           <BrutalistButton href={`/verificar?workId=${encodeURIComponent(work.id)}`} size="sm">
             VERIFICAR OBRA →
           </BrutalistButton>
@@ -237,7 +270,62 @@ export function WorkDetail({ workId }: WorkDetailProps) {
           <BrutalistButton href={`/obra/${work.id}/historial`} size="sm" variant="yellow">
             VER HISTORIAL →
           </BrutalistButton>
+          <BrutalistButton
+            onClick={() => downloadDemoCertificate(work, verificationUrl)}
+            size="sm"
+            type="button"
+          >
+            <Download className="mr-1.5 size-3.5" />
+            DESCARGAR CERTIFICADO (DEMO)
+          </BrutalistButton>
+          <BrutalistButton
+            onClick={handleCopyLink}
+            size="sm"
+            type="button"
+            variant={copied ? "yellow" : "secondary"}
+          >
+            {copied ? (
+              <>
+                <Check className="mr-1.5 size-3.5" />
+                ¡ENLACE COPIADO!
+              </>
+            ) : (
+              <>
+                <Copy className="mr-1.5 size-3.5" />
+                COPIAR ENLACE DE VERIFICACIÓN
+              </>
+            )}
+          </BrutalistButton>
         </div>
+
+        {showFallback ? (
+          <div className="mt-4 border-2 border-border bg-neutral/20 p-3">
+            <label
+              className="block font-ui text-[10px] font-bold tracking-[0.1em] text-ink"
+              htmlFor="manual-verification-url"
+            >
+              ENLACE DIRECTO DE VERIFICACIÓN (SELECCIONAR Y COPIAR):
+            </label>
+            <div className="mt-1.5 flex flex-wrap gap-2">
+              <input
+                className="min-w-0 flex-1 border-2 border-border bg-paper px-2.5 py-1.5 font-mono text-xs text-ink focus:outline-none focus:ring-1 focus:ring-ink"
+                id="manual-verification-url"
+                onFocus={(e) => e.target.select()}
+                readOnly
+                type="text"
+                value={verificationUrl}
+              />
+              <BrutalistButton
+                onClick={() => setShowFallback(false)}
+                size="sm"
+                type="button"
+                variant="secondary"
+              >
+                CERRAR
+              </BrutalistButton>
+            </div>
+          </div>
+        ) : null}
       </section>
     </section>
   );

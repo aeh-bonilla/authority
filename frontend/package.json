@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --loader ./tests/test-loader.mjs --test tests/focal-cases.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

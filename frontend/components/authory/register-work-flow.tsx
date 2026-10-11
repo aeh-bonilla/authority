@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Panel } from "@/components/ui/panel";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Textarea } from "@/components/ui/textarea";
-import { saveWork } from "@/lib/storage";
+import { saveWork, saveWorkWithInitialEvents } from "@/lib/storage";
 import {
   createMockAuthoryId,
   createMockEvidence,
@@ -44,7 +44,13 @@ const registerWorkSchema = z
     title: z.string().trim().min(1, "Indica el título de la obra."),
     type: z.enum(workTypes, { error: "Selecciona un tipo de obra." }),
     description: z.string().trim().min(1, "Describe brevemente la obra."),
-    sourceUrl: z.string().trim(),
+    sourceUrl: z
+      .string()
+      .trim()
+      .refine(
+        (val) => !val || /^https?:\/\//i.test(val),
+        "El enlace debe comenzar con http:// o https://",
+      ),
     author: z.string().trim().min(1, "Indica el nombre de la persona autora."),
     createdAt: z.string(),
     notes: z.string().trim(),
@@ -148,7 +154,18 @@ export function RegisterWorkFlow() {
           status: "registered",
         };
 
-        saveWork(updatedWork);
+        const saveResult = saveWorkWithInitialEvents(updatedWork);
+        if (saveResult.status !== "success") {
+          if (!cancelled) {
+            setGenerationError(
+              saveResult.error ??
+                "No se pudo completar el guardado en el almacenamiento local. Revisa el espacio disponible.",
+            );
+            setFlowState("error");
+          }
+          return;
+        }
+
         setWork(updatedWork);
         setCurrentStep(4);
         setFlowState("created");
@@ -289,7 +306,7 @@ export function RegisterWorkFlow() {
               <dd className="mt-2 break-all font-ui text-xs text-ink">{work.id}</dd>
             </div>
             <div className="border-b-2 border-border p-4 sm:border-r-2 sm:border-b-0">
-              <dt className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/60">HASH SHA-256</dt>
+              <dt className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/60">HASH SIMULADO</dt>
               <dd className="mt-2 font-ui text-xs text-ink">{shortenHash(work.hash)}</dd>
             </div>
             <div className="p-4">
