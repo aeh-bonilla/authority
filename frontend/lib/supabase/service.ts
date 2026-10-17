@@ -16,6 +16,7 @@ interface DbWorkRow {
   file_size: string | null;
   file_mime_type: string | null;
   source_url: string | null;
+  file_url: string | null;
   notes: string | null;
   preview_base64: string | null;
   created_at: string;
@@ -50,6 +51,7 @@ function mapRowToWork(row: DbWorkRow): Work {
     fileSize: row.file_size ?? undefined,
     fileMimeType: row.file_mime_type ?? undefined,
     sourceUrl: row.source_url ?? undefined,
+    fileUrl: row.file_url ?? undefined,
     notes: row.notes ?? undefined,
     createdAt: row.created_at,
     registeredAt: row.registered_at,
@@ -69,6 +71,37 @@ function mapRowToRightsEvent(row: DbRightsEventRow): RightsEvent {
     stellarTransactionId: row.stellar_transaction_id ?? undefined,
     createdAt: row.created_at,
   };
+}
+
+/**
+ * Uploads a PDF or Image file to Supabase Storage bucket 'authory-files'
+ */
+export async function uploadWorkFileToSupabase(
+  fileBuffer: ArrayBuffer | Blob,
+  fileName: string,
+  mimeType: string,
+  workId: string,
+): Promise<string | null> {
+  const supabase = getSupabaseClient();
+  if (!supabase) return null;
+
+  const sanitized = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const filePath = `${workId}/${sanitized}`;
+
+  const { error } = await supabase.storage
+    .from("authory-files")
+    .upload(filePath, fileBuffer, {
+      contentType: mimeType,
+      upsert: true,
+    });
+
+  if (error) {
+    console.error("Error al subir archivo a Supabase Storage:", error.message);
+    return null;
+  }
+
+  const { data } = supabase.storage.from("authory-files").getPublicUrl(filePath);
+  return data.publicUrl;
 }
 
 export async function saveWorkToSupabase(
@@ -92,6 +125,7 @@ export async function saveWorkToSupabase(
     file_size: work.fileSize ?? null,
     file_mime_type: work.fileMimeType ?? null,
     source_url: work.sourceUrl ?? null,
+    file_url: work.fileUrl ?? null,
     notes: work.notes ?? null,
     preview_base64: previewBase64 ?? null,
     created_at: work.createdAt ?? new Date().toISOString(),

@@ -101,6 +101,7 @@ function shortenHash(hash: string): string {
 export function RegisterWorkFlow() {
   const [flowState, setFlowState] = useState<FlowState>("register");
   const [fileMetadata, setFileMetadata] = useState<FileMetadata>();
+  const [selectedFileObj, setSelectedFileObj] = useState<File | null>(null);
   const [realHash, setRealHash] = useState<string>();
   const [work, setWork] = useState<Work>();
   const [currentStep, setCurrentStep] = useState(1);
@@ -208,6 +209,40 @@ export function RegisterWorkFlow() {
           };
         }
 
+        // If a file was selected and it's an image or PDF, upload to Supabase Storage
+        let uploadedFileUrl: string | undefined;
+        if (selectedFileObj) {
+          const mime = selectedFileObj.type || "";
+          const isImg = mime.startsWith("image/");
+          const isPdfDoc = mime === "application/pdf" || selectedFileObj.name.toLowerCase().endsWith(".pdf");
+          if (isImg || isPdfDoc) {
+            try {
+              const formData = new FormData();
+              formData.append("file", selectedFileObj);
+              formData.append("workId", generationWork.id);
+              const uploadRes = await fetch("/api/storage/upload", {
+                method: "POST",
+                body: formData,
+              });
+              if (uploadRes.ok) {
+                const uploadData = await uploadRes.json();
+                if (uploadData.success && uploadData.fileUrl) {
+                  uploadedFileUrl = uploadData.fileUrl;
+                }
+              }
+            } catch (uploadErr) {
+              console.warn("Supabase Storage upload fallback:", uploadErr);
+            }
+          }
+        }
+
+        if (uploadedFileUrl) {
+          updatedWork = {
+            ...updatedWork,
+            fileUrl: uploadedFileUrl,
+          };
+        }
+
         const saveResult = saveWorkWithInitialEvents(updatedWork);
         if (saveResult.status !== "success") {
           if (!cancelled) {
@@ -243,7 +278,7 @@ export function RegisterWorkFlow() {
     return () => {
       cancelled = true;
     };
-  }, [flowState, generationRun, work]);
+  }, [flowState, generationRun, work, selectedFileObj]);
 
   function startGeneration(nextWork: Work): void {
     setWork(nextWork);
@@ -258,11 +293,13 @@ export function RegisterWorkFlow() {
 
     if (!selectedFile) {
       setFileMetadata(undefined);
+      setSelectedFileObj(null);
       setRealHash(undefined);
       setValue("hasFile", false, { shouldValidate: true });
       return;
     }
 
+    setSelectedFileObj(selectedFile);
     setFileMetadata({
       filename: selectedFile.name,
       fileSize: formatFileSize(selectedFile.size),

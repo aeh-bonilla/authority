@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- Authory — Supabase Database Schema
--- Tablas para almacenamiento de metadatos de obras y eventos de derechos
+-- Tablas y Storage para almacenamiento de obras, archivos (PDF/Imágenes) y derechos
 -- ==============================================================================
 
 -- 1. Tabla de Obras Registradas
@@ -18,8 +18,9 @@ CREATE TABLE IF NOT EXISTS works (
   file_size TEXT,
   file_mime_type TEXT,
   source_url TEXT,
+  file_url TEXT,       -- URL pública del archivo PDF o imagen almacenado en Supabase Storage
   notes TEXT,
-  preview_base64 TEXT, -- Opcional: previsualización en Base64 para miniaturas o snippets ligeros (< 250 KB)
+  preview_base64 TEXT, -- Opcional: miniatura en Base64 para carga instantánea (< 250 KB)
   created_at TIMESTAMPTZ DEFAULT NOW(),
   registered_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -70,3 +71,18 @@ DROP POLICY IF EXISTS "Inserción de eventos de derechos" ON rights_events;
 CREATE POLICY "Inserción de eventos de derechos"
   ON rights_events FOR INSERT
   WITH CHECK (true);
+
+-- 4. Configuración de Bucket en Supabase Storage para PDFs e Imágenes
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('authory-files', 'authory-files', true)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "Acceso público de lectura a archivos de obras" ON storage.objects;
+CREATE POLICY "Acceso público de lectura a archivos de obras"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'authory-files');
+
+DROP POLICY IF EXISTS "Subida pública de archivos de obras" ON storage.objects;
+CREATE POLICY "Subida pública de archivos de obras"
+  ON storage.objects FOR INSERT
+  WITH CHECK (bucket_id = 'authory-files');

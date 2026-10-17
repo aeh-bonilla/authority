@@ -23,6 +23,7 @@ export interface Work {
   fileSize?: string;
   fileMimeType?: string;
   sourceUrl?: string;
+  fileUrl?: string;
   notes?: string;
   hash?: string;
   stellarTransactionId?: string;

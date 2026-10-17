@@ -94,6 +94,7 @@ export function isValidWork(value: unknown): value is Work {
   if (isDefined(w.fileSize) && typeof w.fileSize !== "string") return false;
   if (isDefined(w.fileMimeType) && typeof w.fileMimeType !== "string") return false;
   if (isDefined(w.sourceUrl) && !isValidSafeUrl(w.sourceUrl)) return false;
+  if (isDefined(w.fileUrl) && !isValidSafeUrl(w.fileUrl)) return false;
   if (isDefined(w.notes) && typeof w.notes !== "string") return false;
   if (isDefined(w.hash) && !isValidHexHash(w.hash)) return false;
   if (isDefined(w.stellarTransactionId) && typeof w.stellarTransactionId !== "string") return false;

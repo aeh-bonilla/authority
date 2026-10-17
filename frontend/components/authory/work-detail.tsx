@@ -126,6 +126,33 @@ function MetadataGrid({ work }: { work: Work }) {
           </dd>
         </div>
       ) : null}
+      {work.fileUrl ? (
+        <div className="border-b-2 border-r-2 border-border bg-cyan/5 p-2.5 sm:col-span-2">
+          <dt className="font-ui text-[10px] font-bold tracking-[0.1em] text-cyan-900">
+            ARCHIVO PERSISTIDO EN SUPABASE STORAGE
+          </dt>
+          <dd className="mt-1.5 flex flex-col gap-2">
+            <a
+              className="inline-flex w-fit items-center gap-1.5 font-ui text-xs font-bold text-ink underline decoration-cyan decoration-2 hover:text-cyan-900"
+              href={work.fileUrl}
+              rel="noreferrer"
+              target="_blank"
+            >
+              Ver / Descargar {work.filename?.toLowerCase().endsWith(".pdf") ? "Documento PDF" : "Archivo Original"} ↗
+            </a>
+            {work.fileMimeType?.startsWith("image/") ? (
+              <div className="mt-1 w-fit max-w-sm border-2 border-border bg-white p-1 shadow-sm">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  alt={work.title}
+                  className="max-h-56 w-auto object-contain"
+                  src={work.fileUrl}
+                />
+              </div>
+            ) : null}
+          </dd>
+        </div>
+      ) : null}
     </dl>
   );
 }
