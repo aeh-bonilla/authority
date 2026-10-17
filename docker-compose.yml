@@ -1,0 +1,44 @@
+services:
+  # Base de Datos PostgreSQL local
+  db:
+    image: postgres:16-alpine
+    container_name: authory-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: authory
+      POSTGRES_PASSWORD: authory_password
+      POSTGRES_DB: authory_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - authory_pgdata:/var/lib/postgresql/data
+      # Inicializa el esquema automáticamente al primer arranque
+      - ./supabase/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U authory -d authory_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Aplicación Web Authory (Next.js 16 + React 19)
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: authory-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DATABASE_URL: postgresql://authory:authory_password@db:5432/authory_db
+      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  authory_pgdata:
+    driver: local
