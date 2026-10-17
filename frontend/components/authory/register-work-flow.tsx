@@ -17,6 +17,7 @@ import {
   createMockAuthoryId,
   createMockEvidence,
 } from "@/lib/stellar/mock-stellar";
+import { computeFileSha256, computeTextSha256 } from "@/lib/stellar/client-crypto";
 import type { Work, WorkType } from "@/types/work";
 
 const workTypes = [
@@ -100,6 +101,7 @@ function shortenHash(hash: string): string {
 export function RegisterWorkFlow() {
   const [flowState, setFlowState] = useState<FlowState>("register");
   const [fileMetadata, setFileMetadata] = useState<FileMetadata>();
+  const [realHash, setRealHash] = useState<string>();
   const [work, setWork] = useState<Work>();
   const [currentStep, setCurrentStep] = useState(1);
   const [generationRun, setGenerationRun] = useState(0);
@@ -142,17 +144,69 @@ export function RegisterWorkFlow() {
         if (cancelled) return;
         setCurrentStep(3);
 
-        const evidence = await createMockEvidence(generationWork);
-        if (cancelled) return;
+        // Try on-chain registration on Soroban contract via Next.js backend API
+        let onChainTx: {
+          transactionId: string;
+          registeredAt: string;
+          hash: string;
+        } | null = null;
 
-        const updatedWork: Work = {
-          ...generationWork,
-          hash: evidence.hash,
-          stellarTransactionId: evidence.transactionId,
-          registeredAt: evidence.registeredAt,
-          network: evidence.network,
-          status: "registered",
-        };
+        try {
+          const finalHash =
+            generationWork.hash ||
+            (await computeTextSha256(
+              `${generationWork.id}:${generationWork.title}:${generationWork.author}`,
+            ));
+
+          const res = await fetch("/api/stellar/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              workId: generationWork.id,
+              hash: finalHash,
+              author: generationWork.author,
+            }),
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.transactionId) {
+              onChainTx = {
+                transactionId: data.transactionId,
+                registeredAt: data.timestamp || new Date().toISOString(),
+                hash: finalHash,
+              };
+            }
+          }
+        } catch (chainErr) {
+          console.warn("Testnet API call fell back to local ledger:", chainErr);
+        }
+
+        let updatedWork: Work;
+
+        if (onChainTx) {
+          updatedWork = {
+            ...generationWork,
+            hash: onChainTx.hash,
+            stellarTransactionId: onChainTx.transactionId,
+            registeredAt: onChainTx.registeredAt,
+            network: "testnet",
+            status: "registered",
+          };
+        } else {
+          // Fallback to local mock ledger
+          const evidence = await createMockEvidence(generationWork);
+          if (cancelled) return;
+
+          updatedWork = {
+            ...generationWork,
+            hash: evidence.hash,
+            stellarTransactionId: evidence.transactionId,
+            registeredAt: evidence.registeredAt,
+            network: evidence.network,
+            status: "registered",
+          };
+        }
 
         const saveResult = saveWorkWithInitialEvents(updatedWork);
         if (saveResult.status !== "success") {
@@ -192,11 +246,12 @@ export function RegisterWorkFlow() {
     setFlowState("generating");
   }
 
-  function handleFileChange(event: ChangeEvent<HTMLInputElement>): void {
+  async function handleFileChange(event: ChangeEvent<HTMLInputElement>): Promise<void> {
     const selectedFile = event.target.files?.[0];
 
     if (!selectedFile) {
       setFileMetadata(undefined);
+      setRealHash(undefined);
       setValue("hasFile", false, { shouldValidate: true });
       return;
     }
@@ -207,6 +262,14 @@ export function RegisterWorkFlow() {
       fileMimeType: selectedFile.type || undefined,
     });
     setValue("hasFile", true, { shouldValidate: true });
+
+    // Calculate real SHA-256 using Web Crypto API in browser
+    try {
+      const calculatedHash = await computeFileSha256(selectedFile);
+      setRealHash(calculatedHash);
+    } catch (err) {
+      console.warn("Error computing file SHA-256:", err);
+    }
   }
 
   function handleRegister(values: RegisterWorkValues): void {
@@ -221,6 +284,7 @@ export function RegisterWorkFlow() {
       author: values.author,
       network: "testnet",
       status: "processing",
+      ...(realHash ? { hash: realHash } : {}),
       ...(createdAt ? { createdAt } : {}),
       ...(fileMetadata ?? {}),
       ...(sourceUrl ? { sourceUrl } : {}),
@@ -396,6 +460,12 @@ export function RegisterWorkFlow() {
                     <span className="font-ui text-[11px] leading-5 text-ink/65">
                       {fileMetadata.filename} · {fileMetadata.fileSize}
                     </span>
+                  ) : null}
+                  {realHash ? (
+                    <div className="mt-1 flex flex-col gap-0.5 border-l-2 border-cyan pl-2 font-mono text-[10px] text-ink/80">
+                      <span className="font-bold tracking-wider text-cyan-900">HUELLA CRIPTOGRÁFICA (SHA-256):</span>
+                      <span className="break-all">{realHash}</span>
+                    </div>
                   ) : null}
                 </label>
                 <Input

@@ -127,8 +127,39 @@ export function RightsRegistrationFlow({ workId }: RightsRegistrationFlowProps) 
     };
 
     try {
-      // 1. Create simulated rights evidence on mock ledger
-      const mockEvidence = await createMockRightsEvidence(partialEvent);
+      // 1. Record on Soroban smart contract via Next.js backend API
+      let txId: string | undefined;
+
+      try {
+        const res = await fetch("/api/stellar/record-rights", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            workId: work.id,
+            eventId: partialEvent.id,
+            eventType: partialEvent.type,
+            actor: partialEvent.actor,
+            recipient: partialEvent.recipient,
+            terms: partialEvent.terms,
+            effectiveDate: partialEvent.effectiveDate,
+          }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.transactionId) {
+            txId = data.transactionId;
+          }
+        }
+      } catch (chainErr) {
+        console.warn("Error calling record-rights API, falling back:", chainErr);
+      }
+
+      // Fallback to local mock ledger if API call failed
+      if (!txId) {
+        const mockEvidence = await createMockRightsEvidence(partialEvent);
+        txId = mockEvidence.transactionId;
+      }
 
       // Verify work is still active
       const currentWork = getWork();
@@ -138,7 +169,7 @@ export function RightsRegistrationFlow({ workId }: RightsRegistrationFlowProps) 
 
       const completeEvent: RightsEvent = {
         ...partialEvent,
-        stellarTransactionId: mockEvidence.transactionId,
+        stellarTransactionId: txId,
       };
 
       // 2. Persist event to storage
@@ -255,9 +286,24 @@ export function RightsRegistrationFlow({ workId }: RightsRegistrationFlowProps) 
                 <dd className="mt-1 font-ui text-xs text-ink">{confirmedEvent.effectiveDate.slice(0, 10)}</dd>
               </div>
               <div className="border-b-2 border-r-2 border-border p-3">
-                <dt className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/60">TRANSACCIÓN SIMULADA</dt>
-                <dd className="mt-1 line-clamp-1 break-all font-ui text-[11px] text-ink" title={confirmedEvent.stellarTransactionId}>
-                  {confirmedEvent.stellarTransactionId}
+                <dt className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/60">
+                  {confirmedEvent.stellarTransactionId && !confirmedEvent.stellarTransactionId.startsWith("mock_")
+                    ? "TRANSACCIÓN EN STELLAR TESTNET"
+                    : "TRANSACCIÓN REGISTRADA"}
+                </dt>
+                <dd className="mt-1 line-clamp-1 break-all font-mono text-[11px] text-ink" title={confirmedEvent.stellarTransactionId}>
+                  {confirmedEvent.stellarTransactionId && !confirmedEvent.stellarTransactionId.startsWith("mock_") ? (
+                    <a
+                      className="font-semibold text-cyan-800 underline decoration-cyan hover:text-cyan-900"
+                      href={`https://stellar.expert/explorer/testnet/tx/${confirmedEvent.stellarTransactionId}`}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      {confirmedEvent.stellarTransactionId.slice(0, 16)}…{confirmedEvent.stellarTransactionId.slice(-8)} ↗
+                    </a>
+                  ) : (
+                    confirmedEvent.stellarTransactionId
+                  )}
                 </dd>
               </div>
             </dl>

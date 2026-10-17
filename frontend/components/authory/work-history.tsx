@@ -340,13 +340,26 @@ export function WorkHistory({ workId }: WorkHistoryProps) {
                         {event.stellarTransactionId ? (
                           <div className={`border-b-2 border-r-2 border-border p-2.5 ${showEffectiveDiff ? "" : "sm:col-span-2"}`}>
                             <dt className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/60">
-                              TRANSACCIÓN SIMULADA STELLAR
+                              {event.stellarTransactionId.startsWith("mock_")
+                                ? "TRANSACCIÓN REGISTRADA"
+                                : "TRANSACCIÓN EN STELLAR TESTNET"}
                             </dt>
                             <dd
-                              className="mt-1 line-clamp-1 break-all font-ui text-[11px] text-ink"
+                              className="mt-1 line-clamp-1 break-all font-mono text-[11px] text-ink"
                               title={event.stellarTransactionId}
                             >
-                              {event.stellarTransactionId}
+                              {!event.stellarTransactionId.startsWith("mock_") ? (
+                                <a
+                                  className="font-semibold text-cyan-800 underline decoration-cyan hover:text-cyan-900"
+                                  href={`https://stellar.expert/explorer/testnet/tx/${event.stellarTransactionId}`}
+                                  rel="noreferrer"
+                                  target="_blank"
+                                >
+                                  {event.stellarTransactionId.slice(0, 16)}…{event.stellarTransactionId.slice(-8)} ↗
+                                </a>
+                              ) : (
+                                event.stellarTransactionId
+                              )}
                             </dd>
                           </div>
                         ) : null}

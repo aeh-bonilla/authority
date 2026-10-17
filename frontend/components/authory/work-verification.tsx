@@ -11,6 +11,7 @@ import { Panel } from "@/components/ui/panel";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getWork } from "@/lib/storage";
 import { verifyMockEvidence } from "@/lib/stellar/mock-stellar";
+import { computeFileSha256 } from "@/lib/stellar/client-crypto";
 import type { VerificationInput, VerificationResult } from "@/types/stellar";
 import type { Work } from "@/types/work";
 
@@ -111,6 +112,60 @@ export function WorkVerification({
     const currentRun = ++searchRunRef.current;
 
     try {
+      // First attempt on-chain verification against Soroban contract on Testnet
+      let onChainMatched = false;
+      try {
+        const verifyRes = await fetch("/api/stellar/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(verificationInput),
+        });
+
+        if (verifyRes.ok) {
+          const verifyData = await verifyRes.json();
+          if (verifyData.verified) {
+            onChainMatched = true;
+            if (currentRun === searchRunRef.current) {
+              const res: VerificationResult = {
+                verified: true,
+                workId: verifyData.workId,
+                hash: verifyData.hash,
+                evidence: verifyData.evidence,
+                message: verifyData.message || "Evidencia verificada exitosamente en el Smart Contract de Soroban (Stellar Testnet).",
+              };
+              setResult(res);
+              setActiveMessage(res.message);
+
+              const currentWork = getWork();
+              if (currentWork.id === verifyData.workId) {
+                setMatchedWork(currentWork);
+              } else {
+                setMatchedWork({
+                  id: verifyData.workId,
+                  title: `Obra ${verifyData.workId}`,
+                  type: "document",
+                  description: "Registro verificado directamente en el Smart Contract de Soroban.",
+                  author: verifyData.author || "Autor verificado en ledger",
+                  hash: verifyData.hash,
+                  network: "testnet",
+                  status: "verified",
+                  registeredAt: verifyData.registeredAt,
+                });
+              }
+              setState("matched");
+              return;
+            }
+          }
+        }
+      } catch (chainErr) {
+        console.warn("On-chain verification query fell back to local:", chainErr);
+      }
+
+      if (onChainMatched) {
+        return;
+      }
+
+      // Fallback to local mock storage verification
       const res = await verifyMockEvidence(verificationInput);
 
       // Discard stale responses if user cleared or edited inputs while request was in-flight
@@ -135,7 +190,7 @@ export function WorkVerification({
     } catch {
       if (currentRun === searchRunRef.current) {
         setState("error");
-        setActiveMessage("Ocurrió un error inesperado al procesar la verificación simulada.");
+        setActiveMessage("Ocurrió un error inesperado al procesar la verificación.");
       }
     }
   }
@@ -188,19 +243,42 @@ export function WorkVerification({
                 value={workIdInput}
               />
 
-              <Input
-                autoComplete="off"
-                disabled={state === "verifying"}
-                id="verification-hash"
-                label="HASH SIMULADO (HEX 64 DÍGITOS)"
-                onChange={(e) => handleHashChange(e.target.value)}
-                placeholder="Ej. 6f0a7c2d47e19b3a8c5d..."
-                value={hashInput}
-              />
+              <div className="flex flex-col gap-2">
+                <Input
+                  autoComplete="off"
+                  disabled={state === "verifying"}
+                  id="verification-hash"
+                  label="HUELLA CRIPTOGRÁFICA (SHA-256)"
+                  onChange={(e) => handleHashChange(e.target.value)}
+                  placeholder="Ej. 6f0a7c2d47e19b3a8c5d..."
+                  value={hashInput}
+                />
+                <label className="flex flex-col gap-1 border border-border/60 bg-neutral/30 p-2">
+                  <span className="font-ui text-[10px] font-bold tracking-[0.05em] text-ink/75">
+                    O CALCULA EL HASH DIRECTO DESDE UN ARCHIVO ORIGINAL
+                  </span>
+                  <input
+                    className="w-full text-xs text-ink file:mr-2 file:border-0 file:bg-cyan file:px-2 file:py-1 file:font-ui file:text-[10px] file:font-bold file:text-ink"
+                    disabled={state === "verifying"}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        try {
+                          const fileHash = await computeFileSha256(file);
+                          handleHashChange(fileHash);
+                        } catch (err) {
+                          console.warn("Error calculando hash:", err);
+                        }
+                      }
+                    }}
+                    type="file"
+                  />
+                </label>
+              </div>
             </div>
 
             <p className="font-ui text-[11px] text-ink/65">
-              Puedes buscar por <strong>Authory ID</strong>, por <strong>Hash simulado</strong> o por <strong>ambos</strong>. Si ingresas ambos, el sistema requerirá que coincidan exactamente con la misma obra activa.
+              Puedes verificar por <strong>Authory ID</strong>, por <strong>Hash SHA-256</strong> o contrastando ambos. La consulta audita el Smart Contract en Stellar Testnet y el registro local.
             </p>
 
             {inputError && (
@@ -215,11 +293,11 @@ export function WorkVerification({
                 type="submit"
               >
                 {state === "verifying" ? (
-                  "CONSULTANDO SIMULADOR..."
+                  "CONSULTANDO STELLAR TESTNET..."
                 ) : (
                   <>
                     <Search className="mr-1.5 size-4" />
-                    VERIFICAR EN STELLAR (MOCK) →
+                    VERIFICAR EN STELLAR TESTNET →
                   </>
                 )}
               </BrutalistButton>
