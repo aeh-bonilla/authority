@@ -137,14 +137,43 @@ export function WorkDetail({ workId }: WorkDetailProps) {
   const [showFallback, setShowFallback] = useState(false);
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
+    let isMounted = true;
+
+    async function loadWork() {
       const persistedWork = getWork();
-      setWork(persistedWork.id === workId ? persistedWork : null);
-      setIsLoading(false);
-    }, 0);
+      if (persistedWork.id === workId) {
+        if (isMounted) {
+          setWork(persistedWork);
+          setIsLoading(false);
+        }
+        return;
+      }
+
+      // Try fetching from Supabase / server API if not found in local storage
+      try {
+        const res = await fetch(`/api/works?id=${encodeURIComponent(workId)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.work && isMounted) {
+            setWork(data.work);
+            setIsLoading(false);
+            return;
+          }
+        }
+      } catch {
+        // Fallback
+      }
+
+      if (isMounted) {
+        setWork(null);
+        setIsLoading(false);
+      }
+    }
+
+    void loadWork();
 
     return () => {
-      window.clearTimeout(timeoutId);
+      isMounted = false;
     };
   }, [workId]);
 

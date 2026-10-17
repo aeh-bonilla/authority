@@ -85,27 +85,59 @@ export function WorkHistory({ workId }: WorkHistoryProps) {
   const [reconciliationFailed, setReconciliationFailed] = useState(false);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
+    let isMounted = true;
+
+    async function loadHistory() {
       const persisted = getWork();
       if (persisted.id === workId) {
+        if (!isMounted) return;
         setWork(persisted);
-        // Reconcile initial events if they were absent for this work
         const ok = reconcileInitialEvents(persisted);
         setReconciliationFailed(!ok);
         const allEvents = getEvents();
-        // Strict filter by exact workId
         const workEvents = allEvents.filter((e) => e.workId === workId);
         setEvents(sortWorkEvents(workEvents));
-      } else {
+        setIsLoading(false);
+        return;
+      }
+
+      // Try fetching from Supabase / server API
+      try {
+        const [workRes, eventsRes] = await Promise.all([
+          fetch(`/api/works?id=${encodeURIComponent(workId)}`),
+          fetch(`/api/events?workId=${encodeURIComponent(workId)}`),
+        ]);
+
+        if (workRes.ok) {
+          const workData = await workRes.json();
+          if (workData.work && isMounted) {
+            setWork(workData.work);
+            let remoteEvents: RightsEvent[] = [];
+            if (eventsRes.ok) {
+              const eventsData = await eventsRes.json();
+              remoteEvents = eventsData.events || [];
+            }
+            setEvents(sortWorkEvents(remoteEvents));
+            setIsLoading(false);
+            return;
+          }
+        }
+      } catch {
+        // Fallback
+      }
+
+      if (isMounted) {
         setWork(null);
         setEvents([]);
         setReconciliationFailed(false);
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    }, 0);
+    }
+
+    void loadHistory();
 
     return () => {
-      window.clearTimeout(timer);
+      isMounted = false;
     };
   }, [workId]);
 

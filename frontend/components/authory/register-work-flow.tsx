@@ -220,6 +220,13 @@ export function RegisterWorkFlow() {
           return;
         }
 
+        // Asynchronously sync to Supabase backend database if available
+        void fetch("/api/works", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ work: updatedWork }),
+        }).catch(() => {});
+
         setWork(updatedWork);
         setCurrentStep(4);
         setFlowState("created");

@@ -178,6 +178,13 @@ export function RightsRegistrationFlow({ workId }: RightsRegistrationFlowProps) 
         throw new Error("No se pudo persistir el evento en el almacenamiento local.");
       }
 
+      // Asynchronously sync to Supabase backend database if available
+      void fetch("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event: completeEvent }),
+      }).catch(() => {});
+
       // Success
       setRetryEventId(null);
       setConfirmedEvent(completeEvent);

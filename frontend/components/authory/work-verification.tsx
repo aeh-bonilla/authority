@@ -182,6 +182,20 @@ export function WorkVerification({
           setMatchedWork(currentWork);
           setState("matched");
         } else {
+          // Check remote Supabase API
+          try {
+            const remoteRes = await fetch(`/api/works?id=${encodeURIComponent(res.workId)}`);
+            if (remoteRes.ok) {
+              const remoteData = await remoteRes.json();
+              if (remoteData.work) {
+                setMatchedWork(remoteData.work);
+                setState("matched");
+                return;
+              }
+            }
+          } catch {
+            // ignore
+          }
           setState("not_found");
         }
       } else {
