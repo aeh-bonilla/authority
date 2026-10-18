@@ -1,14 +1,16 @@
 # Authory — Documentación de Entrega Semana 4 (MVP Funcional)
 
 **Proyecto:** Authory  
+**Programa:** Blockchain Builders 101 — Stellar × BAF  
+**Entregable:** Semana 4 — MVP funcional  
 **Repositorio:** [Authory en GitHub](https://github.com/nidaela/Authory)  
-**Rama de trabajo:** `feat/semana4-mvp-functional`  
+**Rama de trabajo:** `main` (integrada desde `feat/semana4-mvp-functional`)  
 **Red:** Stellar Testnet (Soroban)  
 **Fecha:** Octubre de 2026  
 
 ---
 
-## Evidencia Verificable Pública
+## Evidencias Verificables del MVP (Públicas)
 
 A continuación se presentan los enlaces públicos e inalterables en exploradores oficiales de Stellar Testnet que evidencian la implementación, compilación y despliegue del contrato inteligente propio de Authory:
 
@@ -166,7 +168,7 @@ npx -y supabase db push
 
 ## 1. Aprendizajes y Ajustes Priorizados
 
-*(Extensión: 215 palabras)*
+*(Extensión: 206 palabras)*
 
 Durante el ciclo de desarrollo del MVP funcional, el equipo aprendió que conectar un frontend moderno con Soroban Smart Contracts exige desacoplar estrictamente la computación criptográfica en cliente de la ejecución transaccional en blockchain. Validamos que calcular el hash SHA-256 de forma nativa en el navegador mediante la Web Crypto API garantiza la privacidad fundamental del usuario, impidiendo que los archivos originales se transmitan fuera de su entorno.
 
@@ -185,53 +187,43 @@ Ordenando los ajustes por impacto y esfuerzo:
 
 ## 2. Riesgos y Pendientes
 
-*(Extensión: 295 palabras)*
+*(Extensión: 270 palabras)*
 
-Al evaluar la solución previo al cierre del MVP funcional, el equipo identificó los siguientes riesgos operativos, técnicos y de arquitectura:
+Authory propone registrar evidencias de autoría y eventos de derechos sobre obras digitales mediante Stellar, manteniendo el contenido original fuera de la cadena. Los siguientes riesgos se priorizan por su posible impacto en la confianza, la continuidad del servicio y la utilidad para creadores y terceros. Las probabilidades son estimaciones cualitativas iniciales, no resultados de pruebas con usuarios.
 
-1. **Riesgo de latencia y congestión de Testnet:**
-   - *Descripción:* Las transacciones en Stellar Testnet y la simulación RPC de Soroban pueden experimentar demoras variables de entre 3 y 15 segundos dependiendo de la sincronización de ledger o saturación temporal de friendbot.
-   - *Mitigación implementada:* Implementamos un patrón de degradación elegante (*graceful fallback*) en el frontend. Si la llamada on-chain demora o carece de conectividad externa, la interfaz preserva la operatividad del flujo informando de manera honesta el estado local de prueba, sin bloquear la interacción del usuario.
+**R1. Integridad y trazabilidad de evidencias — probabilidad media, impacto alto.** Una diferencia entre el archivo, su huella criptográfica y el registro consultado podría producir verificaciones incorrectas. También debe evitarse que una licencia o cesión aparezca desvinculada de la obra correspondiente. Como mitigación, se contemplan pruebas de extremo a extremo, comprobaciones de hash y referencias públicas a las transacciones de testnet.
 
-2. **Riesgo de persistencia de sesiones aisladas en navegador:**
-   - *Descripción:* Aunque las evidencias de las obras y sus eventos de derechos se graban de manera inmutable en el contrato inteligente en Soroban, los metadatos visuales complementarios (título, descripción, notas) residen temporalmente en el almacenamiento local del cliente (`localStorage`).
-   - *Pendiente por resolver:* Desarrollar un backend con base de datos compartida (PostgreSQL / Supabase) y almacenamiento privado cifrado fuera de cadena (off-chain) para sincronizar metadatos entre diferentes navegadores y dispositivos sin almacenar archivos en la blockchain.
+**R2. Identidad y alcance de los derechos — probabilidad media, impacto alto.** Registrar una declaración en blockchain no acredita por sí solo la identidad del autor ni la validez jurídica de una cesión. Es importante distinguir evidencia técnica de titularidad legal, definir quién puede registrar eventos de derechos y explicar estas limitaciones con claridad a los usuarios.
 
-3. **Riesgo de suplantación de identidad sin autenticación criptográfica individual:**
-   - *Descripción:* En la versión actual del MVP, las invocaciones al contrato son autorizadas mediante una cuenta de servicio de Testnet.
-   - *Pendiente por resolver:* Integración de inicio de sesión con Freighter o Passkeys (Soroban smart accounts) para que el campo `author` del contrato corresponda obligatoriamente a una dirección criptográfica verificada (`Address`) que haya firmado la transacción.
+**R3. Privacidad y protección de información — probabilidad media, impacto alto.** Los registros públicos son difíciles de rectificar o retirar. Por ello, se debe minimizar la información incluida en Stellar, evitar publicar archivos originales o datos personales innecesarios y documentar qué información permanece fuera de la cadena.
 
-4. **Riesgo de reset de estado en Testnet de Stellar:**
-   - *Descripción:* Stellar resetea periódicamente el estado de Testnet.
-   - *Mitigación:* Se estructuró el código fuente del contrato en `contracts/` y scripts de despliegue automatizados para reinstanciar el contrato en minutos ante cualquier reinicio de red.
+**R4. Dependencias técnicas — probabilidad media, impacto alto.** La conectividad con Stellar, las firmas rechazadas, las demoras de confirmación o los reinicios de testnet pueden interrumpir una operación. Las medidas previstas incluyen mensajes comprensibles, manejo de errores, prevención de registros duplicados y procedimientos reproducibles de despliegue y verificación.
+
+**R5. Adopción y comprensión — probabilidad por determinar, impacto alto.** Es posible que los creadores consideren suficientes sus métodos actuales o que terceros confundan un registro verificable con una certificación legal. Se evaluarán necesidad, comprensión y disposición a utilizar Authory mediante entrevistas y pruebas de usabilidad.
+
+**Pendientes y seguimiento.** Para el cierre del sprint, el equipo reunió las evidencias públicas exigidas y revisó el comportamiento de los flujos principales. Para etapas posteriores quedan el fortalecimiento de identidad con Freighter, la gestión de disputas y la robustez operativa fuera de testnet.
 
 ---
 
 ## 3. Plan de Validación con Usuarios
 
-*(Extensión: 345 palabras)*
+*(Extensión: 385 palabras)*
 
-Para comprobar la adopción y eficacia real de Authory, se diseñó un plan de validación a futuro enfocado en resolver las fricciones de autoría y derechos planteadas en el Problem Brief:
+**Objetivo.** Determinar si Authory responde a una necesidad relevante para quienes crean obras digitales y si sus registros pueden consultarse y comprenderse sin asistencia. El plan parte del Problem Brief y del Product Blueprint: los usuarios principales son creadores digitales —por ejemplo, ilustradores, diseñadores, fotógrafos, músicos y desarrolladores—; los usuarios secundarios son clientes o compradores que necesitan verificar procedencia y consultar eventos de derechos.
 
-### A quiénes validaremos (Usuarios objetivo)
-- **Creadores digitales independientes:** 10 diseñadores gráficos, 5 ilustradores y 5 desarrolladores independientes que comercializan activos digitales en plataformas web o redes sociales y carecen de un método asequible de registro legal de propiedad intelectual.
-- **Compradores y clientes comerciales:** 5 directores de arte en agencias de publicidad y 3 editores que adquieren licencias de contenido digital y requieren certeza sobre la titularidad y precedencia temporal de las obras.
+**Hipótesis críticas y criterios previos a las pruebas:**
 
-### Métodos de validación
-1. **Pruebas de usabilidad guiadas (flujo completo de 15 minutos):**
-   - El creador registra una obra real propia, descarga el certificado imprimible y comparte el identificador o enlace con un evaluador.
-   - El evaluador ingresa como tercero a la pantalla `/verificar`, sube el archivo recibido y valida la autenticidad e integridad del registro en Stellar Testnet.
-2. **Entrevistas cualitativas semiestructuradas:** Sesiones de 20 minutos post-prueba para evaluar la percepción de confianza del sello temporal en Stellar y la claridad del lenguaje técnico/brutalista.
-3. **Métricas cuantitativas clave:**
-   - Tasa de éxito en la verificación sin asistencia (meta: > 90%).
-   - Tiempo promedio para registrar una obra y generar evidencia (meta: < 90 segundos).
-   - Nivel de comprensión de la separación entre archivo privado y hash on-chain (meta: > 85%).
+1. **H1. Deseabilidad.** Creemos que los creadores valoran una evidencia de autoría fácil de compartir porque hoy deben reunir pruebas dispersas. **Criterio:** al menos cuatro de cinco describen un caso concreto reciente en que enfrentaron esa dificultad y aceptan realizar una prueba posterior de Authory. Se considerarán acciones y experiencias, no cumplidos u opiniones generales.
 
-### Hipótesis a comprobar y criterios de éxito
-- **Hipótesis 1 (Propuesta de valor del creador):** Los creadores digitales perciben que registrar su obra en Stellar mediante Authory aporta una prueba de precedencia temporal y autoría significativamente más sólida y accesible que el registro tradicional de derechos de autor.
-  - *Criterio de éxito:* Al menos el 80% de los creadores entrevistados califica con 4 o 5 (en escala de 1 a 5) la utilidad de la evidencia generada para respaldar reclamos de originalidad.
-- **Hipótesis 2 (Fricción de verificación):** Los compradores y terceros pueden verificar la procedencia y términos de una obra en menos de 2 minutos sin necesidad de crear una cuenta ni compartir el archivo a servidores de terceros.
-  - *Criterio de éxito:* El 90% de las verificaciones guiadas se completa exitosamente en el primer intento y los evaluadores confirman que el certificado y el enlace a Stellar Expert transmiten confianza técnica irrebatible.
+2. **H2. Usabilidad del registro.** Creemos que un creador puede registrar una obra de prueba y localizar su evidencia sin recibir indicaciones. **Criterio:** al menos cuatro de cinco completan el recorrido sin ayuda e identifican correctamente la referencia del registro.
+
+3. **H3. Comprensión de la verificación.** Creemos que un cliente o comprador puede consultar la procedencia de una obra y entender el alcance de la evidencia. **Criterio:** al menos cuatro de cinco consultan una obra de prueba sin asistencia y distinguen entre registro técnico de información y acreditación legal de autoría o derechos.
+
+**Participantes y captación.** Se propone una primera ronda con cinco creadores y cinco clientes o compradores, ajenos al equipo de desarrollo. Se contactarán mediante comunidades creativas y redes profesionales, verificando previamente su perfil con un formulario breve. Las sesiones se programarán después del sprint, una vez preparado un recorrido estable de prueba.
+
+**Métodos y escenarios.** Primero se harán entrevistas sobre comportamientos pasados: «¿Qué hiciste la última vez que necesitaste demostrar que una obra era tuya?» y «¿Cómo verificaste los derechos de una obra antes de utilizarla?». Después se realizarán pruebas moderadas con situaciones, no instrucciones: «Terminaste una ilustración y necesitas conservar una evidencia que puedas compartir» o «Un proveedor te envía una obra y quieres comprobar su procedencia». Una persona moderará sin guiar; otra observará y tomará notas. Se invitará a pensar en voz alta.
+
+**Evidencias, métricas y decisiones.** Por participante se documentarán acción, comentario, paso del recorrido e interpretación por separado. Se medirán finalización sin ayuda, abandono, solicitudes de asistencia y tiempo empleado. La validez técnica de las operaciones se contrastará por separado con sus referencias públicas de Stellar Testnet. Las grabaciones requerirán consentimiento y se usarán únicamente datos de prueba. Con los umbrales fijados antes de observar resultados, cuatro o cinco casos favorables permitirán continuar; tres exigirán ajustar y repetir; dos o menos motivarán replantear la hipótesis o el flujo antes de ampliarlo.
 
 ---
 
@@ -273,4 +265,4 @@ Para comprobar la adopción y eficacia real de Authory, se diseñó un plan de v
 └───────────────────────────────┘ └───────────────────────────────┘
 ```
 
-**Resultado:** Se cumple íntegramente la especificación del Entregable 4, conectando el smart contract propio desplegado en Soroban Testnet con el frontend de Authory, habilitando hash real en navegador, rutas backend dedicadas, evidencia pública verificable y documentación exhaustiva.
+**Resultado:** Se cumple íntegramente la especificación del Entregable 4, conectando el smart contract propio desplegado en Soroban Testnet con el frontend de Authory, habilitando hash real en navegador, rutas backend dedicadas, persistencia en Supabase, evidencia pública verificable y documentación exhaustiva.
