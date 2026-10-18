@@ -25,19 +25,28 @@ A continuación se presentan los enlaces públicos e inalterables en exploradore
 
 ---
 
-## Guía Paso a Paso para Verificar y Probar el Contrato Desplegado
+## Guía Exhaustiva: Verificación Operativa del Smart Contract en Stellar Testnet
 
-Cualquier persona o evaluador puede verificar y auditar el contrato mediante tres métodos complementarios:
+Cualquier evaluador o integrante del equipo puede auditar y comprobar que el contrato inteligente está **desplegado, activo y respondiendo consultas** mediante los siguientes métodos independientes:
 
-### Método 1: Verificación Visual Directa en Exploradores Públicos
-1. Abre el enlace del contrato en [Stellar Expert Testnet](https://stellar.expert/explorer/testnet/contract/CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO).
-2. Verifica que el contrato se encuentra activo, muestra las transacciones emitidas y expone el hash WASM asociado (`ba7d1753ecf002984aee4a87c80b64af6bc1a819ed27bfa98162a9b4cfd2bcaa`).
-3. Abre el enlace de la transacción de registro de obra [`725e126c...`](https://stellar.expert/explorer/testnet/tx/725e126cc7998b795f328f99e9ba60d863202d06aa1166016d0cd573eadd48cf) para inspeccionar los eventos de ledger emitidos con el tópico `work_reg` y los datos del autor y huella.
+### Método A: Auditoría Visual en Exploradores Oficiales de Stellar
+1. **Inspección de Contrato en Stellar Expert:**
+   * Ingresa a: [`https://stellar.expert/explorer/testnet/contract/CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO`](https://stellar.expert/explorer/testnet/contract/CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO)
+   * Comprueba que el estado es válido y que el Wasm Bytecode Hash coincide exactamente con:
+     `ba7d1753ecf002984aee4a87c80b64af6bc1a819ed27bfa98162a9b4cfd2bcaa`.
+2. **Inspección de Contrato en Stellar Lab:**
+   * Ingresa a: [`https://lab.stellar.org/r/testnet/contract/CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO`](https://lab.stellar.org/r/testnet/contract/CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO)
+   * Podrás ver las 5 funciones exportadas del contrato: `register_work`, `record_rights_event`, `get_work`, `get_rights_events` y `verify_work`.
+3. **Auditoría de Eventos de Ledger en Transacciones Reales:**
+   * Abre la transacción de registro de obra [`725e126c...`](https://stellar.expert/explorer/testnet/tx/725e126cc7998b795f328f99e9ba60d863202d06aa1166016d0cd573eadd48cf).
+   * En la pestaña **Events**, verifica la emisión del evento con topic `work_reg` conteniendo la huella SHA-256 `c0ffee1122...` y el autor `Alain Bonilla`.
+   * Abre la transacción de derechos [`30f6f7e9...`](https://stellar.expert/explorer/testnet/tx/30f6f7e9a1df1187d0a6c57ba86eaecebafcb4d8e2af7e12930a160930359199).
+   * Verifica la emisión del evento con topic `right_evt` vinculando la licencia con `Editorial Global`.
 
-### Método 2: Pruebas desde Línea de Comandos (Stellar CLI)
-Teniendo instalado `stellar-cli` (v28+), ejecuta las siguientes instrucciones desde tu terminal:
+### Método B: Verificación por Línea de Comandos (Stellar CLI)
+Con `stellar-cli` instalado en tu sistema, ejecuta directamente las funciones del contrato en Testnet:
 
-1. **Consultar la obra registrada en el contrato (Lectura gratuita sin comisiones):**
+1. **Consultar una obra registrada (`get_work` - Simulación gratuita sin costo de gas):**
    ```bash
    stellar contract invoke \
      --id CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO \
@@ -45,12 +54,12 @@ Teniendo instalado `stellar-cli` (v28+), ejecuta las siguientes instrucciones de
      --network testnet \
      -- get_work --work_id "AUTH-2026-000101"
    ```
-   *Salida esperada:*
+   *Respuesta esperada:*
    ```json
    {"author":"Alain Bonilla","hash":"c0ffee112233445566778899aabbccddeeff00112233445566778899aabbccdd","registered_at":1792211237,"work_id":"AUTH-2026-000101"}
    ```
 
-2. **Consultar los eventos de derechos vinculados a la obra:**
+2. **Consultar los eventos de derechos vinculados (`get_rights_events`):**
    ```bash
    stellar contract invoke \
      --id CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO \
@@ -58,12 +67,12 @@ Teniendo instalado `stellar-cli` (v28+), ejecuta las siguientes instrucciones de
      --network testnet \
      -- get_rights_events --work_id "AUTH-2026-000101"
    ```
-   *Salida esperada:*
+   *Respuesta esperada:*
    ```json
    [{"actor":"Alain Bonilla","effective_date":"2026-10-17","event_id":"EVT-2026-000101","event_type":"license","recipient":"Editorial Global","recorded_at":1792211282,"terms":"Licencia de explotación no exclusiva para medios impresos y digitales","work_id":"AUTH-2026-000101"}]
    ```
 
-3. **Verificar una obra y su huella en el contrato:**
+3. **Verificar concordancia de hash directamente en blockchain (`verify_work`):**
    ```bash
    stellar contract invoke \
      --id CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO \
@@ -71,25 +80,87 @@ Teniendo instalado `stellar-cli` (v28+), ejecuta las siguientes instrucciones de
      --network testnet \
      -- verify_work --work_id "AUTH-2026-000101" --hash "c0ffee112233445566778899aabbccddeeff00112233445566778899aabbccdd"
    ```
-   *Salida esperada:* `true` (o `false` si el hash o la obra no coinciden).
+   *Respuesta esperada:* `true` (o `false` si el hash es alterado).
 
-4. **Registrar una nueva obra en Testnet desde CLI:**
+4. **Registrar una obra nueva en vivo sobre Testnet:**
    ```bash
    stellar contract invoke \
      --id CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO \
      --source alice \
      --network testnet \
-     -- register_work --work_id "AUTH-2026-NUEVA" --hash "1111222233334444555566667777888899990000aaaabbbbccccddddeeeeffff" --author "Nombre Autor"
+     -- register_work --work_id "AUTH-2026-TEST-CLI" --hash "a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef0" --author "Nombre Evaluador"
    ```
 
-### Método 3: Prueba desde la Aplicación Web (Frontend)
-1. Inicia la aplicación local (`cd frontend && npm start` en `http://localhost:3000`).
-2. Entra a **Registrar Obra** (`/registrar-obra`). Selecciona un archivo real desde tu computadora: observa cómo el navegador calcula al instante la huella criptográfica **SHA-256** real utilizando la Web Crypto API (`crypto.subtle.digest`).
-3. Haz clic en **Crear evidencia →**: la aplicación enviará la petición al backend de Next.js (`/api/stellar/register`), el cual interactúa directamente con el contrato Soroban en Testnet, obteniendo una transacción confirmada.
-4. En **Detalle de Obra** (`/obra/[id]`), haz clic sobre el enlace de la transacción para comprobarla en vivo en Stellar Expert.
-5. Haz clic en **Registrar Derechos** (`/obra/[id]/derechos`) para emitir una licencia o cesión que se registra en el contrato.
-6. Ve a **Historial** (`/obra/[id]/historial`) para consultar la línea de tiempo con sus enlaces on-chain.
-7. Ve a **Verificar** (`/verificar`), arrastra el archivo original o ingresa el Authory ID para auditar la precedencia y coincidencia de huella en el contrato inteligente.
+### Método C: Verificación vía Soroban RPC con `curl` (Sin herramientas locales)
+Puedes enviar una petición JSON-RPC estándar directamente al servidor RPC oficial de Stellar Testnet para auditar la salud de la red y el protocolo:
+```bash
+curl -s -X POST -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"getNetwork"}' \
+  https://soroban-testnet.stellar.org
+```
+*Respuesta:* `{"jsonrpc":"2.0","id":1,"result":{"passphrase":"Test SDF Network ; September 2015", ...}}`
+
+### Método D: Verificación Interactiva desde la Aplicación Web
+1. Levanta el proyecto (`cd frontend && npm run dev` o `npm start`).
+2. Entra a `/registrar-obra`, selecciona cualquier archivo de tu máquina: la interfaz calculará la huella **SHA-256** en tu navegador y la registrará en el contrato de Soroban al presionar **Crear evidencia →**.
+3. En la ficha de detalle (`/obra/[id]`), presiona el enlace a la transacción en **Stellar Expert** para verla reflejada en el explorador oficial.
+4. En `/verificar`, audita la obra subiendo el mismo archivo original para confirmar que coincide con la huella inmutable del ledger.
+
+---
+
+## Guía Paso a Paso: Despliegue y Configuración de Supabase
+
+Para habilitar la persistencia compartida en la nube (catálogo multi-navegador, metadatos y almacenamiento de PDFs/imágenes en Supabase Storage), sigue estos sencillos pasos:
+
+### Opción 1: Configuración Manual en Supabase Dashboard (Recomendada — 2 minutos)
+
+1. **Crear Proyecto:**
+   * Ingresa a [https://supabase.com](https://supabase.com) con tu cuenta (gratuita).
+   * Haz clic en **New project**, asigna un nombre (ej. `authory-mvp`), elige una contraseña para la base de datos y selecciona la región más cercana.
+
+2. **Ejecutar el Script SQL de la Base de Datos:**
+   * En el menú lateral izquierdo de tu proyecto en Supabase, entra a **SQL Editor**.
+   * Haz clic en **New query**, copia íntegramente el contenido del archivo [`supabase/schema.sql`](file:///Users/abonilla/Documents/stellar/authority/supabase/schema.sql) de este repositorio y presiona **Run**.
+   * Este script crea:
+     * La tabla `works` (con columnas de metadatos, huella SHA-256, transacción de Stellar y `file_url`).
+     * La tabla `rights_events` (historial cronológico de licencias y cesiones).
+     * Los índices de rendimiento para búsquedas por hash y autor.
+     * Las políticas de seguridad RLS (*Row Level Security*) para permitir lectura y verificación pública sin requerir login.
+     * El bucket público de almacenamiento `authory-files` para persistir PDFs e imágenes.
+
+3. **Obtener Credenciales de Conexión:**
+   * En el panel de Supabase, ve a **Project Settings** (ícono de engranaje) -> **API**.
+   * Copia tu **Project URL** (ej. `https://abcdefghijkl.supabase.co`).
+   * Copia la clave **anon public** (la clave `eyJhbGciOi...`).
+
+4. **Configurar el Entorno en el Frontend:**
+   * En la carpeta `frontend/`, crea un archivo `.env.local` con tus credenciales:
+     ```bash
+     NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
+     NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key-aqui
+     ```
+   * Reinicia el servidor de desarrollo (`npm run dev`) o ejecuta `npm run build`.
+
+5. **Verificar que la Persistencia esté Activa:**
+   * Registra una obra nueva en `/registrar-obra` adjuntando una imagen o PDF.
+   * Abre tu panel de Supabase en **Table Editor** -> `works`: verás la fila creada con su metadata y su `file_url`.
+   * En **Storage** -> `authory-files`: verás el archivo binario almacenado en la nube.
+   * Ahora, abre el enlace `/verificar?workId=AUTH-...` en una **ventana de incógnito u otro dispositivo**: la obra se cargará de inmediato desde Supabase y se verificará con Stellar Testnet.
+
+### Opción 2: Despliegue Automatizado vía Supabase CLI
+
+Si cuentas con tu `SUPABASE_ACCESS_TOKEN` (generado en [supabase.com/dashboard/account/tokens](https://supabase.com/dashboard/account/tokens)), puedes realizar el enlace y migración desde tu terminal:
+
+```bash
+# 1. Iniciar sesión en la CLI
+npx -y supabase login --token <TU_ACCESS_TOKEN>
+
+# 2. Vincular con tu proyecto remoto
+npx -y supabase link --project-ref <TU_PROJECT_REF>
+
+# 3. Aplicar el esquema directamente a la base de datos remota
+npx -y supabase db push
+```
 
 ---
 
@@ -167,36 +238,39 @@ Para comprobar la adopción y eficacia real de Authory, se diseñó un plan de v
 ## Arquitectura Técnica de la Solución Integrada
 
 ```text
-┌────────────────────────────────────────────────────────┐
-│                   NAVEGADOR CLIENTE                    │
-│  - Web Crypto API (SHA-256 sobre bytes locales)         │
-│  - Interfaz Next.js (Home, Registro, Detalle,           │
-│    Derechos, Historial, Verificación)                  │
-└───────────────────────────┬────────────────────────────┘
-                            │ HTTP POST / Fetch
-┌───────────────────────────▼────────────────────────────┐
-│              BACKEND / API ROUTES (NEXT.JS)            │
-│  - /api/stellar/register                               │
-│  - /api/stellar/record-rights                          │
-│  - /api/stellar/verify                                 │
-│  - /api/stellar/status                                 │
-└───────────────────────────┬────────────────────────────┘
-                            │ Soroban RPC / CLI Invocation
-┌───────────────────────────▼────────────────────────────┐
-│                 STELLAR TESTNET LEDGER                 │
-│  Smart Contract: CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3...  │
-│                                                        │
-│  Funciones exportadas:                                 │
-│  • register_work(work_id, hash, author)                │
-│  • record_rights_event(work_id, event_id, ...)         │
-│  • get_work(work_id)                                   │
-│  • get_rights_events(work_id)                          │
-│  • verify_work(work_id, hash)                          │
-│                                                        │
-│  Eventos de Soroban emitidos:                          │
-│  • work_reg (work_id, hash, author, timestamp)         │
-│  • right_evt (work_id, event_id, event_type, ...)      │
-└────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                       NAVEGADOR CLIENTE                         │
+│  - Web Crypto API (Cálculo instantáneo SHA-256 en memoria RAM) │
+│  - Interfaz Next.js (Home, Registro, Detalle, Derechos,        │
+│    Historial, Verificación pública con selector de archivos)   │
+└───────────────────────────────┬─────────────────────────────────┘
+                                │ HTTP POST / JSON Fetch
+┌───────────────────────────────▼─────────────────────────────────┐
+│                 BACKEND / API ROUTES (NEXT.JS)                  │
+│  • /api/stellar/register       • /api/stellar/record-rights     │
+│  • /api/stellar/verify         • /api/stellar/status            │
+│  • /api/works (CRUD Supabase)  • /api/events (CRUD Derechos)    │
+│  • /api/storage/upload (Carga de PDF e Imágenes a Storage)      │
+└───────────────┬─────────────────────────────────┬───────────────┘
+                │                                 │
+     Soroban RPC / CLI Invocation                 │ Supabase JS Client / REST
+                │                                 │
+┌───────────────▼───────────────┐ ┌───────────────▼───────────────┐
+│     STELLAR TESTNET LEDGER    │ │     SUPABASE (POSTGRESQL)     │
+│                               │ │                               │
+│  Smart Contract Registry:     │ │  • Tabla `works`:             │
+│  CAOAFGPATXWJ6KKGXFYHY42Q4... │ │    id, title, author, hash,   │
+│                               │ │    filename, file_url...      │
+│  Funciones exportadas:        │ │                               │
+│  • register_work(...)         │ │  • Tabla `rights_events`:     │
+│  • record_rights_event(...)   │ │    id, work_id, type, terms.. │
+│  • get_work(...)              │ │                               │
+│  • get_rights_events(...)     │ │  • Storage Bucket:            │
+│  • verify_work(...)           │ │    authory-files (PDFs/Fotos) │
+│                               │ │                               │
+│  Eventos Soroban emitidos:    │ │  • Políticas RLS Públicas:    │
+│  • work_reg   • right_evt     │ │    Auditoría sin cuenta       │
+└───────────────────────────────┘ └───────────────────────────────┘
 ```
 
 **Resultado:** Se cumple íntegramente la especificación del Entregable 4, conectando el smart contract propio desplegado en Soroban Testnet con el frontend de Authory, habilitando hash real en navegador, rutas backend dedicadas, evidencia pública verificable y documentación exhaustiva.
