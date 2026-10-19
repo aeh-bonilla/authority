@@ -42,9 +42,17 @@ const workTypeOptions: ReadonlyArray<{ value: WorkType; label: string }> = [
 
 const registerWorkSchema = z
   .object({
-    title: z.string().trim().min(1, "Indica el título de la obra."),
-    type: z.enum(workTypes, { error: "Selecciona un tipo de obra." }),
-    description: z.string().trim().min(1, "Describe brevemente la obra."),
+    title: z
+      .string()
+      .trim()
+      .min(1, "El título de la obra es obligatorio."),
+    type: z.enum(workTypes, {
+      error: "El tipo de obra es obligatorio. Selecciona una opción.",
+    }),
+    description: z
+      .string()
+      .trim()
+      .min(1, "La descripción de la obra es obligatoria."),
     sourceUrl: z
       .string()
       .trim()
@@ -52,17 +60,26 @@ const registerWorkSchema = z
         (val) => !val || /^https?:\/\//i.test(val),
         "El enlace debe comenzar con http:// o https://",
       ),
-    author: z.string().trim().min(1, "Indica el nombre de la persona autora."),
+    author: z
+      .string()
+      .trim()
+      .min(1, "El nombre de la persona autora es obligatorio."),
     createdAt: z.string(),
     notes: z.string().trim(),
     hasFile: z.boolean(),
   })
   .superRefine(({ hasFile, sourceUrl }, context) => {
-    if (!hasFile && !sourceUrl) {
+    const trimmedSource = sourceUrl ? sourceUrl.trim() : "";
+    if (!hasFile && !trimmedSource) {
       context.addIssue({
         code: "custom",
-        message: "Selecciona un archivo o indica un enlace.",
+        message: "Debes adjuntar un archivo o indicar un enlace a la obra.",
         path: ["sourceUrl"],
+      });
+      context.addIssue({
+        code: "custom",
+        message: "Debes adjuntar un archivo o indicar un enlace a la obra.",
+        path: ["hasFile"],
       });
     }
   });
@@ -109,12 +126,13 @@ export function RegisterWorkFlow() {
   const [generationError, setGenerationError] = useState<string>();
 
   const {
-    formState: { errors },
+    formState: { errors, isSubmitted },
     handleSubmit,
     register,
     setValue,
   } = useForm<RegisterWorkValues>({
     resolver: zodResolver(registerWorkSchema),
+    mode: "onTouched",
     defaultValues: {
       title: "",
       type: undefined,
@@ -458,7 +476,11 @@ export function RegisterWorkFlow() {
               <span className="text-[11px] font-bold tracking-[0.08em] text-ink">TIPO DE OBRA *</span>
               <select
                 aria-invalid={Boolean(errors.type)}
-                className="min-h-11 w-full border-2 border-border bg-white px-3 text-sm text-ink focus:border-cyan focus:outline-none"
+                className={`min-h-11 w-full border-2 ${
+                  errors.type
+                    ? "border-red-600 bg-red-50/20 focus:border-red-600"
+                    : "border-border bg-white focus:border-cyan"
+                } px-3 text-sm text-ink focus:outline-none`}
                 defaultValue=""
                 {...register("type")}
               >
@@ -472,7 +494,9 @@ export function RegisterWorkFlow() {
                 ))}
               </select>
               {errors.type ? (
-                <span className="text-[11px] font-semibold text-ink">{errors.type.message}</span>
+                <span className="text-[11px] font-bold text-red-600" role="alert">
+                  {errors.type.message}
+                </span>
               ) : null}
             </label>
 
@@ -485,24 +509,42 @@ export function RegisterWorkFlow() {
 
             <Textarea className="lg:[&>textarea]:min-h-24" label="NOTAS" {...register("notes")} />
 
-            <fieldset className="border-2 border-border p-2 lg:col-span-2">
-              <legend className="px-1 font-ui text-[11px] font-bold tracking-[0.08em] text-ink">
-                ARCHIVO O ENLACE *
-              </legend>
-              <p className="font-ui text-[10px] leading-4 text-ink/65">
-                Selecciona un archivo o indica un enlace a la obra.
+            <fieldset
+              className={`border-2 ${
+                errors.hasFile || errors.sourceUrl
+                  ? "border-red-600 bg-red-50/10"
+                  : "border-border"
+              } p-3 lg:col-span-2`}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <legend className="px-1 font-ui text-[11px] font-bold tracking-[0.08em] text-ink">
+                  ARCHIVO O ENLACE *
+                </legend>
+                {(errors.hasFile || errors.sourceUrl) && !fileMetadata && (
+                  <span className="font-ui text-[11px] font-bold text-red-600" role="alert">
+                    {errors.hasFile?.message || errors.sourceUrl?.message}
+                  </span>
+                )}
+              </div>
+              <p className="mt-0.5 font-ui text-[10px] leading-4 text-ink/65">
+                Debes adjuntar al menos un archivo local o ingresar un enlace público a la obra.
               </p>
-              <div className="mt-2 grid gap-x-5 gap-y-2 sm:grid-cols-2 sm:[&>label]:gap-1.5">
+              <div className="mt-2.5 grid gap-x-5 gap-y-2 sm:grid-cols-2 sm:[&>label]:gap-1.5">
                 <label className="flex flex-col gap-2 font-ui">
                   <span className="text-[11px] font-bold tracking-[0.08em] text-ink">ARCHIVO</span>
                   <input
-                    className="w-full border-2 border-border bg-white px-3 py-2 text-xs text-ink file:mr-3 file:border-0 file:bg-cyan file:px-3 file:py-1.5 file:font-ui file:text-[10px] file:font-bold file:tracking-[0.08em] file:text-ink"
+                    aria-invalid={Boolean(errors.hasFile && !fileMetadata)}
+                    className={`w-full border-2 ${
+                      errors.hasFile && !fileMetadata
+                        ? "border-red-600 bg-red-50/20"
+                        : "border-border bg-white"
+                    } px-3 py-2 text-xs text-ink file:mr-3 file:border-0 file:bg-cyan file:px-3 file:py-1.5 file:font-ui file:text-[10px] file:font-bold file:tracking-[0.08em] file:text-ink focus:border-cyan focus:outline-none`}
                     onChange={handleFileChange}
                     type="file"
                   />
                   {fileMetadata ? (
-                    <span className="font-ui text-[11px] leading-5 text-ink/65">
-                      {fileMetadata.filename} · {fileMetadata.fileSize}
+                    <span className="font-ui text-[11px] font-semibold leading-5 text-ink/80">
+                      ✓ {fileMetadata.filename} · {fileMetadata.fileSize}
                     </span>
                   ) : null}
                   {realHash ? (
@@ -530,6 +572,15 @@ export function RegisterWorkFlow() {
             <Input label="FECHA DE CREACIÓN" type="date" {...register("createdAt")} />
           </div>
         </Panel>
+
+        {isSubmitted && Object.keys(errors).length > 0 && (
+          <div
+            className="mt-3 border-2 border-red-600 bg-red-50 p-3 font-ui text-xs font-bold text-red-700"
+            role="alert"
+          >
+            ⚠️ Por favor completa los campos obligatorios (*) marcados en rojo antes de crear la evidencia.
+          </div>
+        )}
 
         <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <PrivacyNotice className="p-2.5 sm:flex-1" />
