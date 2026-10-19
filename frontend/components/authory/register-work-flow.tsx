@@ -64,7 +64,14 @@ const registerWorkSchema = z
       .string()
       .trim()
       .min(1, "El nombre de la persona autora es obligatorio."),
-    createdAt: z.string(),
+    createdAt: z
+      .string()
+      .trim()
+      .min(1, "La fecha de creación es obligatoria.")
+      .refine(
+        (val) => !Number.isNaN(Date.parse(val)),
+        "Ingresa una fecha de creación válida.",
+      ),
     notes: z.string().trim(),
     hasFile: z.boolean(),
   })
@@ -569,7 +576,12 @@ export function RegisterWorkFlow() {
               label="AUTOR *"
               {...register("author")}
             />
-            <Input label="FECHA DE CREACIÓN" type="date" {...register("createdAt")} />
+            <Input
+              error={errors.createdAt?.message}
+              label="FECHA DE CREACIÓN *"
+              type="date"
+              {...register("createdAt")}
+            />
           </div>
         </Panel>
 
