@@ -183,6 +183,11 @@ Ordenando los ajustes por impacto y esfuerzo:
    - Integración de billeteras Web3 nativas de Stellar (Freighter / SEP-0007) para que cada creador firme transacciones con su propia clave privada, sustituyendo la firma delegada en servidor.
    - Despliegue de un indexador de eventos de Soroban (Mercury / RPC polling) para listar catálogos históricos multicuenta sin depender de identificadores fijos.
 
+3. **Alto impacto, esfuerzo medio (Pendiente crítico para el MVP):**
+   - Sustituir la firma delegada del backend por autenticación real con wallet del usuario mediante **Stellar Wallets Kit** (Freighter, xBull, Lobstr, Albedo).
+   - Habilitar el botón "Entrar" para que cualquier creador pueda conectar su cuenta, registrarse y firmar sus propias transacciones.
+   - Este cambio transforma el modelo actual (firma centralizada) en uno donde el usuario conserva la propiedad de su evidencia on-chain, que es el núcleo del MVP definido en el Product Blueprint.
+   - Sin esta integración, el producto funciona como demo, pero no como MVP descentralizado.
 ---
 
 ## 2. Riesgos y Pendientes
