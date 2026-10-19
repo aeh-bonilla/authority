@@ -187,7 +187,7 @@ Ordenando los ajustes por impacto y esfuerzo:
    - Sustituir la firma delegada del backend por autenticación real con wallet del usuario mediante **Stellar Wallets Kit** (Freighter, xBull, Lobstr, Albedo).
    - Habilitar el botón "Entrar" para que cualquier creador pueda conectar su cuenta, registrarse y firmar sus propias transacciones.
    - Este cambio transforma el modelo actual (firma centralizada) en uno donde el usuario conserva la propiedad de su evidencia on-chain, que es el núcleo del MVP definido en el Product Blueprint.
-   - Sin esta integración, el producto funciona como demo, pero no como MVP descentralizado.
+   - Este cambio transformará el modelo actual de MVP Híbrido (el cual utiliza firmas delegadas en el backend para eliminar la fricción de entrada de los usuarios Web2) hacia una arquitectura 100% descentralizada (Web3 nativa) donde el usuario gestiona sus propias llaves.
 ---
 
 ## 2. Riesgos y Pendientes
