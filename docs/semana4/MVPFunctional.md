@@ -22,7 +22,7 @@ A continuación se presentan los enlaces públicos e inalterables en exploradore
 | **Tx Despliegue de Contrato** | [`5651ec5941aa13a4...`](https://stellar.expert/explorer/testnet/tx/5651ec5941aa13a474230811590004065067f4d37662af3ea9918780b2924069) | Transacción de instanciación e inicialización del contrato en el ledger de Testnet. |
 | **Tx `register_work` en vivo** | [`725e126cc7998b79...`](https://stellar.expert/explorer/testnet/tx/725e126cc7998b795f328f99e9ba60d863202d06aa1166016d0cd573eadd48cf) | Registro de obra (`AUTH-2026-000101`) con emisión de evento nativo Soroban `work_reg`. |
 | **Tx `record_rights_event`** | [`30f6f7e9a1df1187...`](https://stellar.expert/explorer/testnet/tx/30f6f7e9a1df1187d0a6c57ba86eaecebafcb4d8e2af7e12930a160930359199) | Registro de licencia de explotación con emisión de evento nativo Soroban `right_evt`. |
-| **Video Demostrativo (3 min)** | [Enlace al Video en YouTube](https://youtu.be/authory-mvp-demo) *(Reemplazar con enlace público definitivo)* | Video de máximo 3 minutos que expone el producto funcional y su pitch de valor. |
+| **Video Demostrativo (3 min)** | [Ver Video en YouTube](https://www.youtube.com/watch?v=mfPJ7a8cHDA) | Video demostrativo del producto funcional y pitch de valor de Authory. |
 | **Aplicación Frontend en Producción** | [authority-khaki.vercel.app](https://authority-khaki.vercel.app) | Aplicación Next.js 16 desplegada en vivo en Vercel conectada a Stellar Testnet y Supabase. |
 
 ---
