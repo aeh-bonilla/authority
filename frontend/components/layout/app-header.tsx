@@ -17,8 +17,8 @@ export interface AppHeaderProps {
 
 const defaultNavigation: readonly AppHeaderLink[] = [
   { href: "/", label: "INICIO" },
-  { href: "/registrar-obra", label: "REGISTRAR OBRA" },
-  { href: "/verificar", label: "VERIFICAR OBRA" },
+  { href: "/registrar-obra", label: "REGISTRAR OFICIO / OBRA" },
+  { href: "/verificar", label: "VERIFICAR AUTENTICIDAD" },
 ];
 
 export function AppHeader({
@@ -32,10 +32,13 @@ export function AppHeader({
     <header className="border-b-2 border-border bg-white">
       <div className="mx-auto flex min-h-18 w-full max-w-7xl flex-wrap items-center gap-x-5 gap-y-3 px-4 py-3 sm:px-6 lg:px-8">
         <Link
-          className="order-1 font-display text-2xl font-bold tracking-[-0.08em] text-ink"
+          className="order-1 flex items-baseline gap-2 font-display text-2xl font-bold tracking-[-0.08em] text-ink"
           href={brandHref}
         >
-          AUTHORY
+          <span>TolteK</span>
+          <span className="font-ui text-[10px] font-bold tracking-[0.12em] text-ink/60 uppercase">
+            · Cultura & Stellar
+          </span>
         </Link>
 
         <nav aria-label="Navegación principal" className="order-3 w-full sm:order-2 sm:w-auto sm:flex-1">

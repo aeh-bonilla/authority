@@ -1,6 +1,6 @@
 -- ==============================================================================
--- Authory — Supabase Database Schema
--- Tablas y Storage para almacenamiento de obras, archivos (PDF/Imágenes) y derechos
+-- TolteK — Supabase Database Schema
+-- Tablas y Storage para preservación de saberes, obras artesanales, archivos y derechos
 -- ==============================================================================
 
 -- 1. Tabla de Obras Registradas
@@ -21,6 +21,17 @@ CREATE TABLE IF NOT EXISTS works (
   file_url TEXT,       -- URL pública del archivo PDF o imagen almacenado en Supabase Storage
   notes TEXT,
   preview_base64 TEXT, -- Opcional: miniatura en Base64 para carga instantánea (< 250 KB)
+  -- Campos de Salvaguarda del Oficio y Patrimonio Cultural
+  author_role TEXT,        -- 'artisan', 'collective', 'cultural_promoter'
+  technique TEXT,          -- Técnica u oficio tradicional
+  origin_community TEXT,   -- Comunidad / Territorio de origen
+  materials TEXT,          -- Materiales e insumos empleados
+  master_teacher TEXT,     -- Linaje o maestro de quien se aprendió
+  -- Campos de Comercialización y Comercio Justo
+  commercial_status TEXT,  -- 'available', 'on_order', 'private', 'sold'
+  price TEXT,              -- Precio estimado (ej: 250 XLM)
+  artisan_contact TEXT,    -- Contacto directo de venta
+  artisan_wallet TEXT,     -- Billetera Stellar para pagos directos
   created_at TIMESTAMPTZ DEFAULT NOW(),
   registered_at TIMESTAMPTZ DEFAULT NOW()
 );

@@ -3,12 +3,23 @@ import type { RightsEvent } from "@/types/rights-event";
 import type { Work } from "@/types/work";
 
 export const storageKeys = {
-  work: "authory_work",
-  events: "authory_events",
-  rights: "authory_rights",
+  work: "toltek_work",
+  events: "toltek_events",
+  rights: "toltek_rights",
 } as const;
 
 const VALID_WORK_TYPES = new Set([
+  // Categorías de oficio tradicional y arte
+  "textile",
+  "pottery",
+  "woodwork",
+  "metalwork",
+  "painting",
+  "sculpture",
+  "music_dance",
+  "traditional_cuisine",
+  "craft_other",
+  // Categorías generales / digitales
   "photography",
   "illustration",
   "document",
@@ -98,6 +109,17 @@ export function isValidWork(value: unknown): value is Work {
   if (isDefined(w.notes) && typeof w.notes !== "string") return false;
   if (isDefined(w.hash) && !isValidHexHash(w.hash)) return false;
   if (isDefined(w.stellarTransactionId) && typeof w.stellarTransactionId !== "string") return false;
+  // Campos de patrimonio cultural y oficio
+  if (isDefined(w.authorRole) && typeof w.authorRole !== "string") return false;
+  if (isDefined(w.technique) && typeof w.technique !== "string") return false;
+  if (isDefined(w.originCommunity) && typeof w.originCommunity !== "string") return false;
+  if (isDefined(w.materials) && typeof w.materials !== "string") return false;
+  if (isDefined(w.masterTeacher) && typeof w.masterTeacher !== "string") return false;
+  // Campos de comercialización
+  if (isDefined(w.commercialStatus) && typeof w.commercialStatus !== "string") return false;
+  if (isDefined(w.price) && typeof w.price !== "string") return false;
+  if (isDefined(w.artisanContact) && typeof w.artisanContact !== "string") return false;
+  if (isDefined(w.artisanWallet) && typeof w.artisanWallet !== "string") return false;
 
   return true;
 }

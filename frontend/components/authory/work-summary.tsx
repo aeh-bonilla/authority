@@ -8,6 +8,15 @@ export interface WorkSummaryProps {
 }
 
 const workTypeLabels: Record<Work["type"], string> = {
+  textile: "TEXTIL / TELAR",
+  pottery: "CERÁMICA / ALFARERÍA",
+  woodwork: "TALLA EN MADERA",
+  metalwork: "ORFEBRERÍA / JOYERÍA",
+  painting: "PINTURA TRADICIONAL",
+  sculpture: "ESCULTURA",
+  music_dance: "MÚSICA / DANZA",
+  traditional_cuisine: "GASTRONOMÍA",
+  craft_other: "OFICIO ARTESANAL",
   photography: "FOTOGRAFÍA",
   illustration: "ILUSTRACIÓN",
   document: "DOCUMENTO",
