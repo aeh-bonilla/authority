@@ -84,7 +84,7 @@ export function WorkVerification({
     const trimmedHash = hashInput.trim();
 
     if (!trimmedId && !trimmedHash) {
-      setInputError("Por favor, ingresa al menos un TolteK ID o un Hash SHA-256 para verificar.");
+      setInputError("Por favor, ingresa al menos un Authory ID o un Hash simulado para verificar.");
       return;
     }
 
@@ -214,30 +214,30 @@ export function WorkVerification({
   return (
     <section aria-labelledby="verification-heading" className="mx-auto w-full max-w-4xl">
       <div className="border-l-4 border-cyan pl-4 sm:pl-6">
-        <p className="font-ui text-xs font-bold tracking-[0.1em] text-cyan-900 uppercase">
-          TolteK · Verificación Pública de Autenticidad y Oficio
+        <p className="font-ui text-xs font-bold tracking-[0.1em] text-ink/65">
+          VERIFICACIÓN PÚBLICA DE AUTORÍA
         </p>
         <h1
           className="mt-1 font-display text-3xl font-semibold tracking-[-0.065em] text-ink sm:text-4xl"
           id="verification-heading"
         >
-          VERIFICAR PASAPORTE CULTURAL
+          VERIFICAR OBRA
         </h1>
         <p className="mt-2 font-ui text-sm leading-6 text-ink/75">
-          Comprueba la procedencia comunitaria, técnica del artesano y el registro inmutable en Stellar Testnet mediante su TolteK ID o huella criptográfica SHA-256.
+          Comprueba la existencia y autenticidad del registro de una obra mediante su Authory ID, su hash simulado o una combinación de ambos.
         </p>
       </div>
 
       {/* Honest copy notice */}
       <div
-        aria-label="Aviso de trazabilidad"
-        className="mt-6 border-2 border-border bg-yellow/10 p-4"
+        aria-label="Aviso de demostración"
+        className="mt-6 border-2 border-border bg-neutral/60 p-4"
         role="region"
       >
         <div className="flex items-start gap-3">
           <AlertTriangle className="mt-0.5 size-5 shrink-0 text-ink/80" />
           <p className="font-ui text-xs leading-5 text-ink/80">
-            <strong>Trazabilidad en Stellar:</strong> TolteK consulta la blockchain pública de Stellar Testnet (Soroban Smart Contract) y el registro descentralizado para certificar que la pieza no ha sido adulterada ni su autoría plagiada.
+            <strong>Demostración local:</strong> Evidencia simulada en entorno de prueba; no se consultó la red Stellar en vivo ni se calculó un hash criptográfico sobre el contenido del archivo original. Los registros creados en este navegador se verifican frente al almacenamiento local.
           </p>
         </div>
       </div>
@@ -251,9 +251,9 @@ export function WorkVerification({
                 autoComplete="off"
                 disabled={state === "verifying"}
                 id="verification-work-id"
-                label="TOLTEK ID"
+                label="AUTHORY ID"
                 onChange={(e) => handleWorkIdChange(e.target.value)}
-                placeholder="Ej. TLK-2026-001234"
+                placeholder="Ej. AUTH-2026-001234"
                 value={workIdInput}
               />
 
@@ -292,7 +292,7 @@ export function WorkVerification({
             </div>
 
             <p className="font-ui text-[11px] text-ink/65">
-              Puedes verificar por <strong>TolteK ID</strong>, por <strong>Hash SHA-256</strong> o contrastando ambos. La consulta audita el Smart Contract en Stellar Testnet y el registro de la pieza.
+              Puedes verificar por <strong>Authory ID</strong>, por <strong>Hash SHA-256</strong> o contrastando ambos. La consulta audita el Smart Contract en Stellar Testnet y el registro local.
             </p>
 
             {inputError && (
