@@ -1,6 +1,6 @@
-# Authory — Frontend
+# TlamatiK — Frontend
 
-Aplicación frontend de Authory desarrollada con Next.js 16 (App Router, Turbopack), React 19, TypeScript y Tailwind CSS 4. Permite a creadores registrar obras, generar referencias verificables de autoría, gestionar licencias de derechos y consultar el historial cronológico y trazabilidad sobre una simulación de Stellar Testnet.
+Aplicación frontend de TlamatiK (anteriormente Authory) desarrollada con Next.js 16 (App Router, Turbopack), React 19, TypeScript y Tailwind CSS 4. Permite a artesanos, artistas y promotores culturales registrar su oficio y técnicas tradicionales, generar pasaportes culturales físico-digitales verificables, gestionar condiciones de comercio justo y auditar la trazabilidad en Stellar Testnet.
 
 ---
 

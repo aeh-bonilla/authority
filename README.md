@@ -1,6 +1,6 @@
-# Authory — Plataforma de Registro y Trazabilidad de Autoría
+# TlamatiK — Salvaguarda de Saberes Artesanales y Evidencia Stellar
 
-Authory es un protocolo y plataforma web para creadores que permite registrar obras, generar evidencias verificables de autoría ancladas conceptualmente a la red Stellar, otorgar licencias y mantener un historial transparente de derechos sin exponer los archivos originales.
+TlamatiK (anteriormente Authory) es una herramienta y protocolo web para artesanos, artistas y promotores culturales que permite preservar el conocimiento de su oficio, generar pasaportes culturales inmutables anclados a la red Stellar, certificar procedencia con códigos QR y comercializar su trabajo con comercio justo sin intermediarios abusivos.
 
 ---
 

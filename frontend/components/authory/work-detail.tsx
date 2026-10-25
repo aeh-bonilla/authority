@@ -22,6 +22,15 @@ interface MetadataItem {
 }
 
 const workTypeLabels: Record<WorkType, string> = {
+  textile: "Textil / Telar Tradicional",
+  pottery: "Cerámica / Alfarería",
+  woodwork: "Talla en Madera / Alebrijes",
+  metalwork: "Orfebrería / Joyería / Filigrana",
+  painting: "Pintura Tradicional / Arte Popular",
+  sculpture: "Escultura / Cantería",
+  music_dance: "Música / Danza Tradicional",
+  traditional_cuisine: "Gastronomía / Recetario Ancestral",
+  craft_other: "Oficio Artesanal",
   photography: "Fotografía",
   illustration: "Ilustración",
   document: "Documento",
@@ -31,10 +40,23 @@ const workTypeLabels: Record<WorkType, string> = {
   other: "Otro",
 };
 
+const authorRoleLabels: Record<string, string> = {
+  artisan: "Artesano / Artista directo",
+  collective: "Taller familiar / Cooperativa comunitaria",
+  cultural_promoter: "Promotor cultural",
+};
+
+const commercialStatusLabels: Record<string, string> = {
+  available: "Disponible para venta directa",
+  on_order: "Elaboración sobre encargo",
+  private: "Patrimonial / Colección",
+  sold: "Pieza vendida (en custodia)",
+};
+
 const statusLabels: Record<WorkStatus, string> = {
   draft: "BORRADOR",
   processing: "EN PROCESO",
-  registered: "REGISTRADA",
+  registered: "REGISTRADA EN STELLAR",
   verified: "VERIFICADA",
 };
 
@@ -76,9 +98,20 @@ function getEvidence(work: Work): StellarEvidenceRecord | undefined {
 
 function getMetadataItems(work: Work): MetadataItem[] {
   return [
-    { label: "AUTHORY ID", value: work.id },
-    { label: "AUTOR", value: work.author },
-    { label: "TIPO DE OBRA", value: workTypeLabels[work.type] },
+    { label: "TLAMATIK ID", value: work.id },
+    { label: "AUTOR / CREADOR", value: work.author },
+    ...(work.authorRole ? [{ label: "ROL", value: authorRoleLabels[work.authorRole] || work.authorRole }] : []),
+    { label: "RAMA / OFICIO", value: workTypeLabels[work.type] || work.type },
+    ...(work.technique ? [{ label: "TÉCNICA ANCESTRAL", value: work.technique }] : []),
+    ...(work.originCommunity ? [{ label: "COMUNIDAD DE ORIGEN", value: work.originCommunity }] : []),
+    ...(work.materials ? [{ label: "MATERIALES E INSUMOS", value: work.materials }] : []),
+    ...(work.masterTeacher ? [{ label: "LINAJE / MAESTRO", value: work.masterTeacher }] : []),
+    ...(work.commercialStatus
+      ? [{ label: "ESTADO COMERCIAL", value: commercialStatusLabels[work.commercialStatus] || work.commercialStatus }]
+      : []),
+    ...(work.price ? [{ label: "PRECIO SUGERIDO", value: work.price }] : []),
+    ...(work.artisanContact ? [{ label: "CONTACTO DE VENTA", value: work.artisanContact }] : []),
+    ...(work.artisanWallet ? [{ label: "BILLETERA STELLAR", value: work.artisanWallet }] : []),
     ...(work.createdAt ? [{ label: "FECHA DE CREACIÓN", value: formatDate(work.createdAt) }] : []),
     ...(work.registeredAt
       ? [{ label: "FECHA DE REGISTRO", value: formatDate(work.registeredAt) }]
@@ -275,13 +308,96 @@ export function WorkDetail({ workId }: WorkDetailProps) {
         <StatusBadge variant={statusVariants[work.status]}>{statusLabels[work.status]}</StatusBadge>
       </div>
 
+      {/* Ficha Destacada de Saberes y Comercialización */}
+      {(work.technique || work.originCommunity || work.price || work.commercialStatus) && (
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          {/* Tarjeta de Saberes y Patrimonio */}
+          <div className="border-2 border-border bg-yellow/10 p-4">
+            <div className="flex items-center gap-2">
+              <span className="border border-border bg-yellow px-2 py-0.5 font-ui text-[10px] font-bold tracking-[0.1em] text-ink uppercase">
+                Saberes Salvaguardados
+              </span>
+              <span className="font-ui text-xs font-bold text-ink">PATRIMONIO VIVO</span>
+            </div>
+            <dl className="mt-3 space-y-2 text-xs font-ui">
+              {work.technique ? (
+                <div>
+                  <dt className="text-[10px] font-bold text-ink/60 uppercase">Técnica Ancestral:</dt>
+                  <dd className="font-semibold text-ink">{work.technique}</dd>
+                </div>
+              ) : null}
+              {work.originCommunity ? (
+                <div>
+                  <dt className="text-[10px] font-bold text-ink/60 uppercase">Comunidad / Origen:</dt>
+                  <dd className="font-semibold text-ink">{work.originCommunity}</dd>
+                </div>
+              ) : null}
+              {work.materials ? (
+                <div>
+                  <dt className="text-[10px] font-bold text-ink/60 uppercase">Materiales e Insumos:</dt>
+                  <dd className="text-ink">{work.materials}</dd>
+                </div>
+              ) : null}
+              {work.masterTeacher ? (
+                <div>
+                  <dt className="text-[10px] font-bold text-ink/60 uppercase">Linaje Formativo:</dt>
+                  <dd className="text-ink/80">{work.masterTeacher}</dd>
+                </div>
+              ) : null}
+            </dl>
+          </div>
+
+          {/* Tarjeta de Comercio Justo */}
+          <div className="border-2 border-border bg-cyan/10 p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="border border-border bg-cyan px-2 py-0.5 font-ui text-[10px] font-bold tracking-[0.1em] text-ink uppercase">
+                  Comercio Justo
+                </span>
+                <span className="font-ui text-xs font-bold text-ink">VENTA DIRECTA</span>
+              </div>
+              {work.commercialStatus ? (
+                <span className="border border-border bg-white px-2 py-0.5 font-ui text-[10px] font-bold text-ink">
+                  {commercialStatusLabels[work.commercialStatus] || work.commercialStatus}
+                </span>
+              ) : null}
+            </div>
+
+            <div className="mt-3">
+              {work.price ? (
+                <div className="flex items-baseline gap-2">
+                  <span className="text-[10px] font-bold text-ink/60 uppercase font-ui">Precio sugerido:</span>
+                  <span className="font-display text-2xl font-bold text-ink">{work.price}</span>
+                </div>
+              ) : (
+                <p className="font-ui text-xs text-ink/70">Precio a consultar directamente con el artesano.</p>
+              )}
+
+              {work.artisanContact ? (
+                <div className="mt-2 text-xs font-ui">
+                  <span className="text-[10px] font-bold text-ink/60 uppercase block">Contacto directo:</span>
+                  <span className="font-semibold text-ink">{work.artisanContact}</span>
+                </div>
+              ) : null}
+
+              {work.artisanWallet ? (
+                <div className="mt-2 text-xs font-ui">
+                  <span className="text-[10px] font-bold text-cyan-950 uppercase block">Billetera Stellar (Pagos sin intermediarios):</span>
+                  <span className="break-all font-mono text-[11px] text-ink">{work.artisanWallet}</span>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mt-5 grid items-start gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
         <Panel aria-labelledby="work-data-title" padding="none">
           <h2
             className="border-b-2 border-border bg-neutral px-3 py-2 font-ui text-[10px] font-bold tracking-[0.1em] text-ink"
             id="work-data-title"
           >
-            DATOS DE LA OBRA
+            FICHA TÉCNICA Y DE AUTORÍA
           </h2>
           <MetadataGrid work={work} />
         </Panel>
@@ -309,22 +425,22 @@ export function WorkDetail({ workId }: WorkDetailProps) {
             className="font-ui text-[10px] font-bold tracking-[0.1em] text-ink/65"
             id="work-actions-title"
           >
-            ACCIONES DE LA OBRA
+            ACCIONES DE LA PIEZA
           </h2>
           <p className="font-ui text-[10px] text-ink/60">
-            Demostración local: los registros se conservan en este navegador y origen.
+            TlamatiK: pasaporte físico-digital para el artesano, coleccionista y promotor cultural.
           </p>
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2.5">
           <BrutalistButton href={`/verificar?workId=${encodeURIComponent(work.id)}`} size="sm">
-            VERIFICAR OBRA →
+            VERIFICAR AUTENTICIDAD →
           </BrutalistButton>
           <BrutalistButton href={`/obra/${work.id}/derechos`} size="sm" variant="secondary">
-            REGISTRAR LICENCIA →
+            REGISTRAR LICENCIA / CESIÓN →
           </BrutalistButton>
           <BrutalistButton href={`/obra/${work.id}/historial`} size="sm" variant="yellow">
-            VER HISTORIAL →
+            HISTORIAL DE DERECHOS →
           </BrutalistButton>
           <BrutalistButton
             onClick={() => downloadDemoCertificate(work, verificationUrl)}
@@ -332,7 +448,7 @@ export function WorkDetail({ workId }: WorkDetailProps) {
             type="button"
           >
             <Download className="mr-1.5 size-3.5" />
-            DESCARGAR CERTIFICADO (DEMO)
+            DESCARGAR PASAPORTE CULTURAL (DEMO)
           </BrutalistButton>
           <BrutalistButton
             onClick={handleCopyLink}

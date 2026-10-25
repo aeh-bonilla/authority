@@ -5,16 +5,16 @@ import { Panel } from "@/components/ui/panel";
 
 const capabilities = [
   {
-    title: "REGISTRO DE AUTORÍA",
-    description: "Evidencia verificable de creación.",
+    title: "PRESERVACIÓN DEL OFICIO",
+    description: "Cápsula de saberes: técnica ancestral, materiales, comunidad y linaje.",
   },
   {
-    title: "VERIFICACIÓN PÚBLICA",
-    description: "Comprobación de procedencia.",
+    title: "PASAPORTE CULTURAL & QR",
+    description: "Certificado físico-digital de autenticidad anclado de forma inmutable a Stellar.",
   },
   {
-    title: "HISTORIAL DE DERECHOS",
-    description: "Licencias y transferencias.",
+    title: "COMERCIO JUSTO Y DIRECTO",
+    description: "Venta directa y trazabilidad de derechos y pagos sin intermediarios abusivos.",
   },
 ];
 
@@ -29,25 +29,29 @@ export default function Home() {
           className="grid items-start gap-5 lg:flex-1 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch lg:gap-8"
         >
           <div className="border-l-2 border-border pl-5 sm:pl-7 lg:flex lg:flex-col lg:justify-center">
+            <span className="font-ui text-xs font-bold tracking-[0.15em] text-cyan-900 uppercase">
+              TlamatiK · Protocolo de Memoria Cultural & Stellar
+            </span>
             <h1
-              className="font-display text-4xl font-semibold leading-[0.93] tracking-[-0.075em] text-ink sm:text-5xl lg:text-[clamp(2.5rem,3.6vw,3.25rem)] lg:whitespace-nowrap"
+              className="mt-2 font-display text-4xl font-semibold leading-[0.93] tracking-[-0.075em] text-ink sm:text-5xl lg:text-[clamp(2.5rem,3.6vw,3.25rem)]"
               id="home-title"
             >
-              <span className="block">PROTEGE Y VERIFICA</span>
-              <span className="block">LA AUTORÍA DE TUS</span>
-              <span className="block">OBRAS DIGITALES</span>
+              <span className="block">SALVAGUARDA EL OFICIO.</span>
+              <span className="block">COMERCIALIZA CON</span>
+              <span className="block text-cyan-950">COMERCIO JUSTO.</span>
             </h1>
             <p className="mt-3 max-w-xl font-ui text-sm leading-5 text-ink/75 sm:leading-6">
-              Registra evidencia verificable de autoría, fecha y derechos sin publicar el archivo
-              original en la blockchain.
+              Herramienta integral para que artesanos, artistas y promotores culturales protejan
+              la técnica y memoria de su oficio, certifiquen la procedencia con códigos QR y
+              vendan su trabajo respaldados por la red Stellar.
             </p>
 
             <div className="mt-4 flex flex-wrap gap-2">
               <BrutalistButton href="/registrar-obra" size="md">
-                REGISTRAR OBRA →
+                REGISTRAR OFICIO / OBRA →
               </BrutalistButton>
               <BrutalistButton href="/verificar" size="md" variant="secondary">
-                VERIFICAR OBRA →
+                VERIFICAR AUTENTICIDAD →
               </BrutalistButton>
             </div>
           </div>
@@ -58,17 +62,17 @@ export default function Home() {
                 className="font-display text-base font-semibold tracking-[-0.04em] text-ink"
                 id="architecture-title"
               >
-                ARQUITECTURA / EVIDENCIA
+                TRAZABILIDAD CULTURAL / STELLAR
               </h2>
             </div>
 
             <div className="flex flex-1 flex-col justify-center p-3 sm:p-4 lg:p-5">
               <div className="border-2 border-border bg-white p-3">
                 <h3 className="font-display text-lg font-semibold tracking-[-0.045em] text-ink lg:text-xl">
-                  ARCHIVO ORIGINAL
+                  SABER ANCESTRAL / PIEZA
                 </h3>
                 <p className="mt-0.5 font-ui text-[10px] font-bold tracking-[0.1em] text-ink/60">
-                  PRIVADO · OFF-CHAIN
+                  TÉCNICA · MATERIALES · COMUNIDAD DE ORIGEN
                 </p>
               </div>
 
@@ -78,8 +82,11 @@ export default function Home() {
 
               <div className="border-2 border-border bg-yellow p-3">
                 <h3 className="font-display text-lg font-semibold tracking-[-0.045em] text-ink lg:text-xl">
-                  HASH CRIPTOGRÁFICO
+                  HUELLA CRIPTOGRÁFICA
                 </h3>
+                <p className="mt-0.5 font-ui text-[10px] font-bold tracking-[0.1em] text-ink/70">
+                  SELLO SHA-256 DEL PROCESO Y REGISTRO
+                </p>
               </div>
 
               <div aria-hidden="true" className="flex h-4 items-center justify-center font-ui text-lg">
@@ -88,10 +95,10 @@ export default function Home() {
 
               <div className="border-2 border-border bg-cyan p-3">
                 <h3 className="font-display text-lg font-semibold tracking-[-0.045em] text-ink lg:text-xl">
-                  RED STELLAR
+                  RED STELLAR & PASAPORTE QR
                 </h3>
                 <p className="mt-0.5 font-ui text-[10px] font-bold tracking-[0.1em] text-ink/65">
-                  REFERENCIA VERIFICABLE
+                  ATTESTATION INMUTABLE · COMERCIO DIRECTO
                 </p>
               </div>
 
@@ -100,7 +107,7 @@ export default function Home() {
         </section>
 
         <section
-          aria-label="Capacidades principales de Authory"
+          aria-label="Capacidades principales de TlamatiK"
           className="mt-6 grid border-l-2 border-t-2 border-border sm:mt-8 lg:grid-cols-3"
         >
           {capabilities.map((capability) => (
@@ -127,10 +134,10 @@ export default function Home() {
               className="font-display text-xl font-semibold tracking-[-0.045em] text-yellow"
               id="privacy-title"
             >
-              TU ARCHIVO ORIGINAL SIEMPRE PERMANECE PRIVADO.
+              DIGNIDAD PARA EL ARTESANO · TRANSPARENCIA EN STELLAR.
             </h2>
             <p className="font-ui text-[11px] leading-5 text-white/65 lg:text-right">
-              Stellar = capa de confianza y trazabilidad.
+              TlamatiK: Salvaguarda patrimonial contra la apropiación cultural y el regateo.
             </p>
           </div>
         </section>

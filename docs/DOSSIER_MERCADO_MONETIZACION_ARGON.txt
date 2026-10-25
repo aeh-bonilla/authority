@@ -1,0 +1,141 @@
+DOSSIER DE INVESTIGACIÓN: ANÁLISIS DE MERCADO Y MODELOS DE MONETIZACIÓN
+PROYECTO: TLAMATIK (CULTURA, ARTESANÍAS Y BLOCKCHAIN STELLAR)
+
+================================================================================
+INSTRUCCIONES DE ENTRADA PARA EL MODELO DE ANÁLISIS (GOOGLE ARGON / REASONING ENGINE)
+================================================================================
+
+Rol sugerido para el análisis:
+Actúa como un comité evaluador y consultor estratégico de élite compuesto por:
+1. Jurado Senior de Hackathons Internacionales Web3 / Stellar Community Fund.
+2. Director de Estrategia de Negocios y Venture Capital enfocado en Criptoeconomía de Impacto Social.
+3. Economista de la Cultura, Patrimonio Inmaterial y Mercados de Artesanías en América Latina y el Sur Global.
+4. Especialista en Product-Market Fit, Unit Economics y Adopción Tecnológica en Comunidades Rurales.
+
+Objetivo de la consulta:
+A partir de los lineamientos oficiales del hackathon, los antecedentes técnicos de TlamatiK (anteriormente Authory) y el requerimiento de la categoría, realiza una auditoría de alineación con el reto, un Estudio de Mercado Exhaustivo, un Análisis de Viabilidad Económica y el Diseño de Modelos de Monetización Sostenibles.
+
+================================================================================
+1. LINEAMIENTOS Y CONTEXTO DEL HACKATHON
+================================================================================
+
+1.1 El Requerimiento Oficial del Área:
+"Crear una herramienta que permita a artesanos, artistas y promotores culturales preservar el conocimiento de su oficio y comercializar su trabajo."
+
+1.2 Desglose Estricto de los Tres Actores Obligatorios:
+1. Artesanos: Creadores de patrimonio físico, técnicas ancestrales heredadas, talleres familiares. Frecuente exclusión bancaria y brecha digital.
+2. Artistas: Creadores contemporáneos, plásticos, visuales o de diseño con raíz cultural. Obras originales o seriadas con necesidad de certificado de autenticidad y regalías de reventa.
+3. Promotores Culturales: Curadores, líderes comunitarios, cooperativas, colectivos, ONGs, museos o gestores culturales. Actúan como agentes de confianza, apadrinamiento digital y facilitadores de la catalogación y exportación.
+
+1.3 Desglose Estricto de las Dos Metas Mandatorias:
+1. Preservar el conocimiento de su oficio:
+   - La herramienta no debe limitarse a registrar un producto terminado, sino la memoria viva del proceso artesanal: técnicas (ej. telar de cintura, barro negro, filigrana), materiales autóctonos, recetas de tintes naturales, territorio/origen y tradición comunitaria.
+   - Sello criptográfico inmutable como escudo contra la apropiación cultural indebida y el plagio de marcas industriales.
+2. Comercializar su trabajo:
+   - Eliminación de intermediarios abusivos (coyotaje) que retienen entre el 70% y el 80% del valor.
+   - Liquidación directa y transparente de pagos al artesano en moneda estable (USDC) o XLM a través de Stellar, cobrando comisiones ínfimas (<1%).
+   - Mecanismos de monetización tanto de la pieza física como del conocimiento (talleres, licencias éticas, mecenazgo).
+
+1.4 Rúbrica de Evaluación Esperada del Hackathon:
+- Alineación con el Reto (25%): ¿Resuelve de forma directa las necesidades de artesanos, artistas y promotores culturales?
+- Preservación del Oficio y Patrimonio (20%): ¿Cómo captura y protege el saber tradicional más allá de una simple foto?
+- Comercio Justo y Pagos (20%): ¿Permite transacciones reales, directas y transparentes hacia los creadores?
+- Uso Pertinente de Stellar / Soroban (15%): ¿Por qué Stellar y no una base de datos centralizada? (Trazabilidad pública, micropagos de fracciones de centavo, contratos inteligentes para reparto automático de fondos).
+- Modelo de Negocio y Sostenibilidad (10%): ¿Cómo se monetiza la plataforma sin volverse un intermediario predatorio?
+- UX y Accesibilidad Inclusiva (10%): ¿Es usable para artesanos sin experiencia previa en cripto? (El rol del promotor cultural como puente).
+
+================================================================================
+2. RESUMEN EJECUTIVO Y ANTECEDENTES TÉCNICOS DE TLAMATIK
+================================================================================
+
+2.1 ¿Qué es TlamatiK (anteriormente Authory)?
+TlamatiK (desarrollado inicialmente bajo el nombre Authory) nació en el marco del programa de aceleración Blockchain Builders 101 (Stellar x BAF). Cuenta con un MVP Funcional en Producción (Semana 4 completada):
+- Smart Contract desplegado en Stellar Testnet (Soroban):
+  * Dirección del contrato: CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO
+  * Funciones activas: register_work (registro con hash SHA-256 y timestamp), record_rights_event (licencias y cesiones), get_work, get_rights_events, verify_work.
+  * Eventos de ledger Soroban nativos: work_reg y right_evt.
+- Frontend Operativo: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, alojado en Vercel.
+- Seguridad y Privacidad ("Zero-Knowledge Content"): El archivo original nunca se expone en la blockchain. Solo se calcula la huella criptográfica SHA-256 en el cliente y se ancla al ledger público.
+- Persistencia Híbrida: Metadatos ampliados y almacenamiento seguro en Supabase (PostgreSQL + RLS + Storage Buckets).
+- Verificador Público Universal: Permite auditar la autoría y la no alteración de un archivo de manera gratuita e instantánea sin necesidad de registrarse.
+
+2.2 Evolución de la Tesis de Producto:
+TlamatiK pasa de ser un "registro genérico de copyright digital" a convertirse en:
+La infraestructura descentralizada de "Pasaporte Cultural Físico-Digital (Phygital)" y Comercio Justo en Stellar para artesanos, creadores de patrimonio y promotores culturales.
+
+================================================================================
+3. MAPA DE ACTORES Y PROBLEMAS ESTRUCTURALES
+================================================================================
+
+- Maestro Artesano / Taller Familiar: Piezas físicas únicas. Transmisión oral del oficio. Exclusión bancaria y riesgo de plagio por marcas de moda. Necesita proteger el proceso y técnica, demostrar autenticidad con sello físico-digital, recibir pagos directos sin intermediarios. No pagará suscripciones mensuales fijas; acepta micro-comisiones porcentuales por venta exitosa.
+- Promotor Cultural / Cooperativa / ONG: Gestor comunitario, curador, cooperativa artesanal, museo o fundación. Puente tecnológico de los artesanos. Requiere herramienta para registrar y certificar a decenas de artesanos, gestionar catálogos y ventas de exportación colectiva. Alto interés en planes institucionales (SaaS B2B / B2G), subvenciones o licencias gubernamentales.
+- Artista Contemporáneo Independiente: Trabaja obras mixtas, diseño con raíz cultural, piezas seriadas o de galería. Nativo digital. Requiere trazabilidad de ediciones, certificados de autenticidad para galeristas y registro de derechos de autor y regalías de reventa. Dispuesto a pagar micro-tarifas por certificación o suscripción Pro.
+- Comprador / Coleccionista Ético (Turista o Internacional): Busca autenticidad, trazabilidad, artesanía genuina y garantía de comercio justo. Quiere escanear un QR en la pieza física y ver quién la hizo, la comunidad, la historia y la prueba en Stellar. Dispuesto a pagar un sobreprecio (premium price) por piezas verificadas y apoyar directamente al artesano.
+- Marcas Éticas, Diseñadores de Moda y Arquitectura: Empresas que quieren incorporar técnicas tradicionales de forma legal y ética (evitando cancelaciones por apropiación). Necesitan mecanismo claro para pagar licencias de explotación comercial y regalías directas a la comunidad. Alto presupuesto para licenciamiento comercial verificable en blockchain.
+
+================================================================================
+4. EJES DE ANÁLISIS REQUERIDOS PARA GOOGLE ARGON
+================================================================================
+
+MÓDULO 1: ALINEACIÓN CON EL HACKATHON Y ESTUDIO DE MERCADO
+1. Auditoría de Cumplimiento de los Lineamientos:
+   - ¿Cómo calificaría un jurado de hackathon a TlamatiK frente al requerimiento? ¿Cuáles son las fortalezas más evidentes y cuáles son los puntos ciegos a subsanar antes del pitch final?
+2. Tamaño del Mercado (TAM, SAM, SOM):
+   - Estimar el mercado global de artesanías y artes populares (Handicrafts market), con foco en América Latina, Asia y África.
+   - Mercado de autenticación de arte y coleccionables, y del mercado de "comercio ético / artesanal".
+   - Tasa de crecimiento anual compuesta (CAGR) proyectada 2026-2032.
+3. Tendencias Macroeconómicas y del Consumidor:
+   - Crecimiento de la demanda de autenticidad, trazabilidad y "lujo consciente / slow fashion".
+   - Riesgos corporativos y marcos legales contra la apropiación cultural (ej. normativas UNESCO, OMPI/WIPO sobre Conocimientos Tradicionales y Expresiones Culturales Tradicionales).
+4. Análisis de Competidores y Sustitutos:
+   - Plataformas de artesanías: Etsy, Novica, plataformas de comercio justo tradicionales (¿por qué fallan en trazabilidad de origen e intermediación?).
+   - Soluciones Web3 de Propiedad Intelectual: Story Protocol, Verisart, Transient Labs, plataformas NFT clásicas (¿por qué están desconectadas de las artesanías físicas y de los artesanos tradicionales?).
+   - Sellos físicos tradicionales: Denominaciones de origen gubernamentales (Marca País, sellos de cera/holográficos). Ventajas de la certificación descentralizada en Stellar frente a la burocracia estatal.
+
+MÓDULO 2: MODELOS DE MONETIZACIÓN Y ARQUITECTURA DE INGRESOS
+Analiza y evalúa la viabilidad, fricción y potencial de ingresos de los siguientes 5 modelos (pueden ser híbridos):
+1. Modelo A: Comisión por Transacción de Comercio Justo (Marketplace Take Rate)
+   - Cobro de un porcentaje reducido (ej. 2.5% a 5%) sobre cada compraventa de piezas físicas o licencias pagadas en USDC/XLM en Stellar.
+   - Comparativa contra el 15-20% de Etsy/Shopify y el 50-80% de intermediarios físicos tradicionales.
+2. Modelo B: Emisión de Pasaportes Culturales / Sellos QR Físico-Digitales (Pay-per-Certificate)
+   - Costo unitario por la generación e impresión de certificados de autenticidad con chip NFC o QR de seguridad inviolable.
+   - ¿Quién absorbe este costo: el comprador, el artesano o el promotor cultural?
+3. Modelo C: SaaS B2B / B2G para Promotores Culturales, Museos, Gobiernos y Cooperativas
+   - Suscripción mensual o anual para Secretarías de Cultura, ONGs y cooperativas de artesanos que requieren dashboards para gestionar catálogos de cientos de artesanos, auditorías de impacto social y trazabilidad de exportación.
+4. Modelo D: Protocolo de Licenciamiento Ético B2B (Royalty Streaming)
+   - Empresas de moda, arquitectura o diseño que desean reproducir un patrón tradicional pagan una licencia registrada en el smart contract de Soroban, canalizando automáticamente regalías a la billetera de la comunidad.
+   - Comisión de TlamatiK por estructurar y garantizar el contrato de cesión ética.
+5. Modelo E: Micro-mecenazgo y Venta de Talleres / "Cápsulas de Saberes"
+   - Los maestros artesanos no solo venden la pieza: venden masterclasses, tutoriales o reciben patrocinios globales (mecenazgo cultural descentralizado) para mantener vivo su taller.
+
+MÓDULO 3: ECONOMÍA DE LA UNIDAD (UNIT ECONOMICS) Y PROYECCIONES
+1. Estructura de Costos Operativos:
+   - Costos en Stellar/Soroban (transacciones mínimas en Testnet/Mainnet, ledger storage fees).
+   - Costos de infraestructura (Vercel, Supabase, Storage de imágenes y videos de alta resolución, dominios).
+   - Costos de kits físicos (etiquetas QR, tarjetas de autenticidad, chips NFC para piezas de alta gama).
+2. Escenarios de Ingresos a 3 años:
+   - Escenario Conservador, Moderado y Agresivo (a 12, 24 y 36 meses).
+   - Estimación de LTV (Lifetime Value) y CAC (Customer Acquisition Cost) en los segmentos B2C y B2B.
+
+MÓDULO 4: BARRERAS DE ENTRADA, RIESGOS Y ESTRATEGIA GO-TO-MARKET (GTM)
+1. Resolución de la Fricción Web3 (Onboarding sin fricción):
+   - ¿Cómo manejar la creación de cuentas Stellar y billeteras (Account Abstraction, Passkeys, custodia delegada con Promotores Culturales) para que un artesano rural no tenga que gestionar llaves privadas de 24 palabras?
+   - Off-ramps: ¿Cómo convierte el artesano los USDC o XLM a efectivo / moneda local (pesos, quetzales, soles) de forma rápida y barata?
+2. Estrategia de Adopción Inicial (Cold Start Problem):
+   - Estrategia de alianzas con cooperativas piloto (ej. Oaxaca, Chiapas en México; Cusco en Perú; Otavalo en Ecuador; etc.).
+   - Ferias de arte popular, festivales culturales y tiendas de museos como primeros canales de distribución.
+3. Métricas Clave de Éxito (KPIs):
+   - ¿Qué métricas importan más: volumen transaccionado (GMV), número de oficios documentados, número de artesanos activos, o ingresos generados para las comunidades?
+
+MÓDULO 5: PLAN DE PITCH GANADOR PARA EL HACKATHON (ONE-PAGER)
+- Síntesis ejecutiva de alto impacto para presentar ante los jueces:
+  * El Gancho (Hook): La tragedia de la pérdida del patrimonio y la explotación económica.
+  * La Solución TlamatiK: El pasaporte cultural físico-digital sobre Stellar.
+  * Por qué Stellar / Soroban: Micropagos directos, bajo costo y trazabilidad pública.
+  * Tracción / Demo Funcional: Smart contract activo en Testnet y verificación pública en vivo.
+  * Sostenibilidad Económica: Modelo de negocio viable y ético.
+  * Impacto Social (ODS de la ONU): ODS 8 (Trabajo Decente y Crecimiento Económico), ODS 10 (Reducción de las Desigualdades) y ODS 11 (Ciudades y Comunidades Sostenibles / Protección del Patrimonio Cultural).
+
+================================================================================
+(Fin del documento de entrada para Google Argon)
+================================================================================

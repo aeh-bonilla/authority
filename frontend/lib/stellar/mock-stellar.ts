@@ -59,14 +59,17 @@ function getVerificationInput(input: string | VerificationInput): VerificationIn
   };
 }
 
-export function createMockAuthoryId(): string {
+export function createMockTlamatikId(): string {
   const year = new Date().getUTCFullYear();
   sequence += 1;
   const suffix = ((Date.now() + sequence) % 1_000_000)
     .toString()
     .padStart(6, "0");
-  return `AUTH-${year}-${suffix}`;
+  return `TLM-${year}-${suffix}`;
 }
+
+export const createMockToltekId = createMockTlamatikId;
+export const createMockAuthoryId = createMockTlamatikId;
 
 export function generateMockHash(): string {
   return createHexValue(64);
