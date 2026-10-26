@@ -27,3 +27,10 @@ Para la presentación del Demo Day del proyecto **Authory**, se desarrollaron lo
      - Construido con la identidad visual y paleta de Authory (*azul abisal `#071f38`, turquesa maya `#0faec8`, jade hielo `#72e0ed` y tipografías Space Grotesk e IBM Plex Mono*).
      - Navegación por teclado (Flechas / Espacio), pantalla completa (<kbd>F</kbd>) y temporizador regresivo de 4:30 min.
      - **Teleprompter de notas del orador integrado:** Al presionar la tecla <kbd>S</kbd> se despliega el guion palabra por palabra sincronizado con cada diapositiva, indicando qué se ve en pantalla, qué ejecuta el driver y cuál es el plan B.
+
+3. **Presentación PowerPoint Oficial (.pptx):**
+   * Archivo: [`Authory_Demo_Day_Stellar.pptx`](./Authory_Demo_Day_Stellar.pptx)
+   * **Características:**
+     - Formato panorámico 16:9 con diseño brutalista en la paleta oficial de Authory.
+     - 8 diapositivas con tarjetas de alto contraste, tipografía técnica, estadísticas destacadas y badges de estado.
+     - **Notas del orador integradas (Speaker Notes):** Cada diapositiva incluye el speech sincronizado, los tiempos asignados, qué debe hacer el driver de la demo y el Plan B de contingencia visible en la vista del moderador de PowerPoint.
