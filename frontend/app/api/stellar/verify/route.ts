@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
     if (!workId && !hash) {
       return NextResponse.json(
-        { verified: false, message: "Debe ingresar al menos un TlamatiK ID o un Hash." },
+        { verified: false, message: "Debe ingresar al menos un Authory ID o un Hash." },
         { status: 400 },
       );
     }

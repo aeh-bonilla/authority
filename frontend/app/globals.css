@@ -1,14 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  /* Paleta inspirada en el relieve de jade y turquesa maya */
-  --background: #edf5f8;       /* Lienzo cantera / niebla mineral clara */
-  --ink: #071f38;              /* Azul abisal / sombra de relieve tallado */
-  --border: #0a2d4d;           /* Borde índigo mesoamericano / relieve */
-  --yellow: #72e0ed;           /* Jade hielo / reflejo luminoso de piedra tallada */
-  --cyan: #0faec8;             /* Turquesa Maya / disco central del medallón */
-  --success: #38d39f;          /* Jadeíta natural / sello de validación */
-  --neutral: #d5e9f1;          /* Piedra pulida / gris turquesa suave */
+  --background: #ffffff;
+  --ink: #0a0a0a;
+  --border: #111111;
+  --yellow: #ffe600;
+  --cyan: #1ecad3;
+  --success: #a8f0c2;
+  --neutral: #f4f4f1;
 }
 
 @theme inline {

@@ -16,14 +16,9 @@ function formatTimestamp(timestamp: string): string {
 
 export function WorkMetadata({ work, className = "" }: WorkMetadataProps) {
   const items: MetadataItem[] = [
-    { label: "TLAMATIK ID", value: work.id },
-    { label: "AUTOR / ARTESANO", value: work.author },
-    ...(work.authorRole ? [{ label: "ROL", value: work.authorRole.toUpperCase() }] : []),
-    { label: "RAMA / OFICIO", value: work.type.toUpperCase() },
-    ...(work.technique ? [{ label: "TÉCNICA ANCESTRAL", value: work.technique }] : []),
-    ...(work.originCommunity ? [{ label: "COMUNIDAD", value: work.originCommunity }] : []),
-    ...(work.materials ? [{ label: "MATERIALES", value: work.materials }] : []),
-    ...(work.price ? [{ label: "PRECIO SUGERIDO", value: work.price }] : []),
+    { label: "ID DE OBRA", value: work.id },
+    { label: "AUTOR", value: work.author },
+    { label: "TIPO", value: work.type.toUpperCase() },
     ...(work.createdAt
       ? [{ label: "CREADA", value: formatTimestamp(work.createdAt) }]
       : []),

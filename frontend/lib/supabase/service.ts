@@ -19,15 +19,6 @@ interface DbWorkRow {
   file_url: string | null;
   notes: string | null;
   preview_base64: string | null;
-  author_role?: string | null;
-  technique?: string | null;
-  origin_community?: string | null;
-  materials?: string | null;
-  master_teacher?: string | null;
-  commercial_status?: string | null;
-  price?: string | null;
-  artisan_contact?: string | null;
-  artisan_wallet?: string | null;
   created_at: string;
   registered_at: string;
 }
@@ -62,15 +53,6 @@ function mapRowToWork(row: DbWorkRow): Work {
     sourceUrl: row.source_url ?? undefined,
     fileUrl: row.file_url ?? undefined,
     notes: row.notes ?? undefined,
-    authorRole: (row.author_role as Work["authorRole"]) ?? undefined,
-    technique: row.technique ?? undefined,
-    originCommunity: row.origin_community ?? undefined,
-    materials: row.materials ?? undefined,
-    masterTeacher: row.master_teacher ?? undefined,
-    commercialStatus: (row.commercial_status as Work["commercialStatus"]) ?? undefined,
-    price: row.price ?? undefined,
-    artisanContact: row.artisan_contact ?? undefined,
-    artisanWallet: row.artisan_wallet ?? undefined,
     createdAt: row.created_at,
     registeredAt: row.registered_at,
   };
@@ -146,15 +128,6 @@ export async function saveWorkToSupabase(
     file_url: work.fileUrl ?? null,
     notes: work.notes ?? null,
     preview_base64: previewBase64 ?? null,
-    author_role: work.authorRole ?? null,
-    technique: work.technique ?? null,
-    origin_community: work.originCommunity ?? null,
-    materials: work.materials ?? null,
-    master_teacher: work.masterTeacher ?? null,
-    commercial_status: work.commercialStatus ?? null,
-    price: work.price ?? null,
-    artisan_contact: work.artisanContact ?? null,
-    artisan_wallet: work.artisanWallet ?? null,
     created_at: work.createdAt ?? new Date().toISOString(),
     registered_at: work.registeredAt ?? new Date().toISOString(),
   };

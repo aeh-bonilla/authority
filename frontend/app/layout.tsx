@@ -14,9 +14,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TlamatiK | Salvaguarda de Saberes Artesanales y Evidencia Stellar",
-  description:
-    "Plataforma para que artesanos, artistas y promotores culturales preserven el conocimiento de su oficio y comercialicen su trabajo con evidencia verificable en Stellar.",
+  title: "Authory | Evidencia de autoría",
+  description: "Registro y evidencia verificable de obras digitales.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
