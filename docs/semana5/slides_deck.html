@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authory — Demo Day Pitch Deck (Stellar × BAF)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #071f38;
+      --bg-panel: #0d2744;
+      --bg-card: #113459;
+      --ink: #f0f7fb;
+      --ink-muted: #8fb6d3;
+      --border: #1a4975;
+      --border-focus: #0faec8;
+      --cyan: #0faec8;
+      --yellow: #72e0ed;
+      --success: #38d39f;
+      --orange: #f97316;
+      --danger: #ef4444;
+      --font-display: 'Space Grotesk', -apple-system, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Bar */
+    header {
+      background: rgba(7, 31, 56, 0.95);
+      border-bottom: 2px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: var(--cyan);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 4px 8px;
+      border: 1px solid var(--ink);
+      letter-spacing: 0.1em;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-sub {
+      color: var(--cyan);
+      font-size: 11px;
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .brand-sub { display: inline; }
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 14px;
+      background: var(--bg-card);
+      color: var(--ink);
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--cyan);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+
+    .btn-primary {
+      background: var(--cyan);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+
+    .btn-primary:hover {
+      background: var(--yellow);
+    }
+
+    .btn-speech-toggle {
+      border-color: var(--yellow);
+      color: var(--yellow);
+    }
+    .btn-speech-toggle.active {
+      background: var(--yellow);
+      color: var(--bg);
+    }
+
+    .timer-display {
+      font-size: 13px;
+      background: #041220;
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: 2px;
+      color: var(--yellow);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Main Deck Layout */
+    .deck-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Slides viewport */
+    .slide-viewport {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 580px;
+      position: relative;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-panel);
+      border: 2px solid var(--border);
+      box-shadow: 8px 8px 0px rgba(0,0,0,0.4);
+      padding: 44px;
+      position: relative;
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slide.active {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Progress bar */
+    .progress-bar-container {
+      width: 100%;
+      height: 6px;
+      background: #041220;
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--yellow));
+      width: 12.5%;
+      transition: width 0.3s ease;
+    }
+
+    /* Slide Content Typography */
+    .slide-tag {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--cyan);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .slide-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: var(--ink);
+      margin-bottom: 24px;
+      text-transform: uppercase;
+    }
+
+    .slide-title span.accent {
+      color: var(--yellow);
+    }
+
+    .slide-title span.cyan {
+      color: var(--cyan);
+    }
+
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Slide Components */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 860px) {
+      .grid-2 { grid-template-columns: 1.1fr 0.9fr; }
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 860px) {
+      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 860px) {
+      .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .panel-box {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      padding: 20px;
+      position: relative;
+    }
+
+    .panel-box.featured {
+      border-color: var(--cyan);
+      background: #092f52;
+    }
+
+    .panel-box.alert {
+      border-color: var(--orange);
+    }
+
+    .panel-box.success {
+      border-color: var(--success);
+    }
+
+    .panel-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .panel-heading {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 0.9;
+      color: var(--yellow);
+      margin-bottom: 6px;
+    }
+
+    .text-body {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink-muted);
+    }
+
+    .text-body strong {
+      color: var(--ink);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 2px;
+      text-transform: uppercase;
+    }
+
+    .badge-cyan { background: rgba(15, 174, 200, 0.2); color: var(--cyan); border: 1px solid var(--cyan); }
+    .badge-yellow { background: rgba(114, 224, 237, 0.2); color: var(--yellow); border: 1px solid var(--yellow); }
+    .badge-orange { background: rgba(249, 115, 22, 0.2); color: var(--orange); border: 1px solid var(--orange); }
+    .badge-green { background: rgba(56, 211, 159, 0.2); color: var(--success); border: 1px solid var(--success); }
+
+    /* Footer Meta */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+
+    .time-badge {
+      background: #05182a;
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      color: var(--yellow);
+      font-weight: 600;
+    }
+
+    /* Speech Drawer (Teleprompter for Presenter) */
+    .speech-drawer {
+      background: #041220;
+      border-top: 3px solid var(--yellow);
+      padding: 20px 30px;
+      display: none;
+      box-shadow: 0 -10px 25px rgba(0,0,0,0.5);
+    }
+
+    .speech-drawer.open {
+      display: block;
+    }
+
+    .speech-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .speech-header h3 {
+      font-family: var(--font-display);
+      font-size: 15px;
+      color: var(--yellow);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .speech-content {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #e2f1fc;
+      background: #08223c;
+      padding: 16px 20px;
+      border-left: 4px solid var(--cyan);
+      margin-bottom: 12px;
+    }
+
+    .speech-content em {
+      color: var(--yellow);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .action-guidance {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      font-size: 12px;
+    }
+
+    .guide-box {
+      background: #092642;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+    }
+
+    .guide-box strong {
+      color: var(--cyan);
+      display: block;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Code & Hash styling */
+    .hash-code {
+      background: #030d17;
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--yellow);
+      word-break: break-all;
+    }
+
+    /* Keyboard help tooltip */
+    .key-hint {
+      display: inline-block;
+      padding: 2px 6px;
+      background: #0a2d4d;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 10px;
+      color: var(--ink);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="brand-group">
+      <div class="brand-badge">AUTHORY</div>
+      <div class="brand-title">STELLAR × BAF · DEMO DAY</div>
+      <span class="brand-sub">| Soroban Attestation Protocol</span>
+    </div>
+
+    <div class="nav-controls">
+      <div class="timer-display" id="timer">
+        ⏱️ <span id="time-spent">00:00</span> / 04:30
+      </div>
+
+      <button class="btn" id="btn-prev" title="Diapositiva anterior (Flecha Izquierda)">← Ant</button>
+      <span id="slide-num" style="font-weight: 700; font-size: 13px; min-width: 45px; text-align: center;">1 / 8</span>
+      <button class="btn btn-primary" id="btn-next" title="Siguiente diapositiva (Flecha Derecha o Espacio)">Sig →</button>
+
+      <button class="btn btn-speech-toggle" id="btn-speech-toggle" title="Abrir/Cerrar Speech del Orador (Tecla S)">
+        🎙️ Speech [S]
+      </button>
+
+      <button class="btn" id="btn-fullscreen" title="Pantalla completa (Tecla F)">⛶ [F]</button>
+    </div>
+  </header>
+
+  <!-- Slide Deck Viewport -->
+  <main class="deck-container">
+    <div class="slide-viewport">
+
+      <!-- SLIDE 1: PORTADA -->
+      <section class="slide active" id="slide-1" data-time="15" data-title="Portada">
+        <div>
+          <div class="slide-tag">
+            <span class="badge badge-cyan">BLOCKCHAIN BUILDERS 101</span>
+            <span>SESIÓN #9 · DEMOSTRAR</span>
+          </div>
+          <h1 class="slide-title">
+            AUTHORY<br>
+            <span class="accent">MEMORIA INALTERABLE</span> Y DERECHOS EN STELLAR
+          </h1>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="panel-box featured">
+              <div class="panel-label">PROPUESTA CENTRAL</div>
+              <h3 class="panel-heading">Atestación criptográfica de autoría y licencias</h3>
+              <p class="text-body">
+                Permite a creadores digitales y artistas estampar una huella inmutable de sus obras en Stellar Testnet, manteniendo el archivo original 100% privado y permitiendo auditoría pública sin intermediarios.
+              </p>
+              <div style="margin-top: 14px; display: flex; gap: 8px;">
+                <span class="badge badge-green">SOROBAN SMART CONTRACT</span>
+                <span class="badge badge-yellow">SHA-256 NATIVO</span>
+                <span class="badge badge-cyan">NEXT.JS 16</span>
+              </div>
+            </div>
+
+            <div class="panel-box">
+              <div class="panel-label">EQUIPO DE DESARROLLO</div>
+              <p class="text-body" style="font-size: 13px; line-height: 1.8;">
+                • <strong>Alain Bonilla</strong> (Frontend 02, Arquitectura Stellar, Smart Contract)<br>
+                • <strong>Daniela Ramírez</strong> (Frontend Foundation, Coordinación)<br>
+                • <strong>Selene Escalona</strong> (Propuesta de Problema, Lean Canvas, Specs Soroban)<br>
+                • <strong>Rodrigo Ramírez</strong> (Historias de Usuario, Backlog MVP)<br>
+                • <strong>Owen Isaac Bailón</strong> (Módulo de Verificación Pública)
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div>PRESIONA <span class="key-hint">→</span> O <span class="key-hint">ESPACIO</span> PARA AVANZAR</div>
+          <div class="time-badge">0:00 - 0:15 (15 s)</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: EL PROBLEMA (CON UN CASO) -->
+      <section class="slide" id="slide-2" data-time="30" data-title="Problema con un Caso">
+        <div>
+          <div class="slide-tag">
+            <span class="badge badge-orange">EL PROBLEMA REAL</span>
+            <span>CASO + DATO + FUENTE = CREIBILIDAD</span>
+          </div>
+          <h2 class="slide-title">
+            MATEO Y EL ROBO DE SU OBRA:<br>
+            <span class="accent">CONSTRUIDO NO ES DEMOSTRADO</span>
+          </h2>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="panel-box alert">
+              <div class="panel-label">EL CASO CONCRETO</div>
+              <h3 class="panel-heading">Mateo, ilustrador independiente en Medellín</h3>
+              <p class="text-body">
+                Mateo entregó una serie de ilustraciones digitales a una agencia para revisión de campaña. Dos semanas después cancelaron el encargo aduciendo "recorte de presupuesto".
+              </p>
+              <p class="text-body" style="margin-top: 10px;">
+                Al mes siguiente, Mateo vio sus personajes publicados en vallas y redes comerciales sin su firma y sin liquidarle un solo peso de regalías.
+              </p>
+            </div>
+
+            <div class="panel-box featured">
+              <div class="panel-label">EL DATO QUE LE DA PESO</div>
+              <div class="stat-number">71%</div>
+              <h4 style="font-family: var(--font-display); font-size: 17px; margin-bottom: 8px;">de creadores sufren impago o plagio</h4>
+              <p class="text-body" style="font-size: 13px;">
+                Fuente: <em>Freelancers Union & WIPO Creative Survey</em>.<br>
+                <strong>¿Por qué no reclaman?</strong> Porque sus únicas pruebas son fechas locales de Photoshop o cadenas de correo. Cualquier peritaje o demanda cuesta más que el encargo mismo.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div style="color: var(--yellow);">★ Regla: Un caso concreto antes que una abstracción vacía.</div>
+          <div class="time-badge">0:15 - 0:45 (30 s)</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: DOS USUARIOS, UNA HISTORIA -->
+      <section class="slide" id="slide-3" data-time="25" data-title="Dos Usuarios">
+        <div>
+          <div class="slide-tag">
+            <span class="badge badge-yellow">USUARIO Y CONTEXTO</span>
+            <span>CADA LADO NECESITA AL OTRO</span>
+          </div>
+          <h2 class="slide-title">
+            DOS ACTORES, <span class="cyan">UNA SOLA HISTORIA</span>
+          </h2>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="panel-box featured">
+              <div class="panel-label">ACTOR 1: MATEO (REGISTRA)</div>
+              <h3 class="panel-heading">El Creador Independiente</h3>
+              <p class="text-body">
+                • <strong>Quién es:</strong> Ilustrador, modelador 3D o artista que produce activos digitales valiosos.<br>
+                • <strong>Qué hace hoy:</strong> Guarda archivos en Google Drive o se envía auto-correos.<br>
+                • <strong>Qué le cuesta:</strong> Pérdida de derechos, impotencia ante apropiaciones y desprotección contractual.
+              </p>
+            </div>
+
+            <div class="panel-box">
+              <div class="panel-label">ACTOR 2: LA EDITORIAL (CONSULTA)</div>
+              <h3 class="panel-heading">El Comprador / Tercero</h3>
+              <p class="text-body">
+                • <strong>Quién es:</strong> Agencia, cliente corporativo o coleccionista.<br>
+                • <strong>Qué hace hoy:</strong> Firma contratos a ciegas rezando porque no aparezca el autor real con una demanda por derechos reservados.<br>
+                • <strong>Qué necesita:</strong> Comprobar en 5 segundos si Mateo tiene la titularidad legítima.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div>La historia se cuenta desde Mateo; la editorial aparece cuando se necesita.</div>
+          <div class="time-badge">0:45 - 1:10 (25 s)</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: PROPUESTA DE VALOR & POR QUÉ BLOCKCHAIN -->
+      <section class="slide" id="slide-4" data-time="30" data-title="Propuesta de Valor">
+        <div>
+          <div class="slide-tag">
+            <span class="badge badge-green">SOLUCIÓN</span>
+            <span>DEFINICIÓN EXACTA DE VALOR</span>
+          </div>
+          <h2 class="slide-title">
+            LA PROPUESTA DE VALOR: <span class="accent">¿POR QUÉ BLOCKCHAIN?</span>
+          </h2>
+        </div>
+
+        <div class="slide-body">
+          <div class="panel-box featured" style="margin-bottom: 20px;">
+            <div style="font-size: 15px; line-height: 1.8;">
+              <strong style="color: var(--yellow);">PARA:</strong> creadores digitales e ilustradores independientes,<br>
+              <strong style="color: var(--yellow);">QUE:</strong> no tienen cómo probar la precedencia ni licencias de sus obras,<br>
+              <strong style="color: var(--yellow);">AUTHORY PERMITE:</strong> generar un sello temporal inmutable en Stellar manteniendo el archivo privado,<br>
+              <strong style="color: var(--yellow);">A DIFERENCIA DE:</strong> archivos y correos que cualquiera puede manipular o plataformas cerradas.
+            </div>
+          </div>
+
+          <div class="panel-box alert">
+            <div class="panel-label">¿POR QUÉ BLOCKCHAIN EN UNA FRASE? (LA AUDIENCIA LO PREGUNTARÁ)</div>
+            <p style="font-size: 16px; font-weight: 600; color: #fff;">
+              «Porque la huella queda en un registro público que ninguna de las partes puede alterar después y que cualquiera puede auditar sin pedir permiso.»
+            </p>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div>FRÍASE QUE UNE: <em>«Veamos exactamente cómo lo hace Mateo en Authory...»</em></div>
+          <div class="time-badge">1:10 - 1:40 (30 s)</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: DEMO EN VIVO (FLUJO DE PUNTA A PUNTA) -->
+      <section class="slide" id="slide-5" data-time="90" data-title="Demostración en Vivo">
+        <div>
+          <div class="slide-tag">
+            <span class="badge badge-cyan">DEMO EN VIVO (90 SEGUNDOS)</span>
+            <span>NARRAR RESULTADOS, NO CLICS</span>
+          </div>
+          <h2 class="slide-title">
+            UN SOLO FLUJO, <span class="cyan">DE PUNTA A PUNTA</span>
+          </h2>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-4">
+            <div class="panel-box featured">
+              <span class="badge badge-cyan">PASO 1 (20 s)</span>
+              <h4 style="margin: 10px 0 6px; font-family: var(--font-display);">1. HASH LOCAL</h4>
+              <p class="text-body" style="font-size: 12px;">
+                Mateo sube su obra. La Web Crypto API calcula el hash SHA-256 en su RAM. <strong>El archivo original no viaja a la red</strong>.
+              </p>
+            </div>
+
+            <div class="panel-box featured">
+              <span class="badge badge-yellow">PASO 2 (25 s)</span>
+              <h4 style="margin: 10px 0 6px; font-family: var(--font-display);">2. SOROBAN</h4>
+              <p class="text-body" style="font-size: 12px;">
+                El contrato inteligente en Stellar Testnet estampa la huella y emite el evento <code>work_reg</code>.
+              </p>
+            </div>
+
+            <div class="panel-box">
+              <span class="badge badge-green">PASO 3 (25 s)</span>
+              <h4 style="margin: 10px 0 6px; font-family: var(--font-display);">3. AUDITORÍA</h4>
+              <p class="text-body" style="font-size: 12px;">
+                La editorial entra a <code>/verificar</code>, sube el archivo recibido y comprueba autoría y fecha sin tener cuenta.
+              </p>
+            </div>
+
+            <div class="panel-box">
+              <span class="badge badge-orange">PASO 4 (20 s)</span>
+              <h4 style="margin: 10px 0 6px; font-family: var(--font-display);">4. COMPROBANTE</h4>
+              <p class="text-body" style="font-size: 12px;">
+                Inspección pública del ledger en Stellar Expert y descarga de certificado imprimible.
+              </p>
+            </div>
+          </div>
+
+          <div class="panel-box" style="margin-top: 16px; background: #030f1c;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="color: var(--yellow);">PLAN B EN CASO DE FALLA DE RED:</strong> Si la red de pruebas demora más de 15s, switch inmediato al video de respaldo grabado.
+              </div>
+              <a href="https://authority-khaki.vercel.app" target="_blank" class="btn btn-primary" style="font-size: 11px;">Abrir App en Vivo ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div>REGLA DE DEMO: Narrar consecuencias para Mateo, nunca "le doy clic al botón azul".</div>
+          <div class="time-badge">1:40 - 3:10 (90 s)</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: EVIDENCIA TÉCNICA VERIFICABLE -->
+      <section class="slide" id="slide-6" data-time="25" data-title="Evidencia Técnica">
+        <div>
+          <div class="slide-tag">
+            <span class="badge badge-green">EVIDENCIA TÉCNICA</span>
+            <span>AUDITABLE POR CUALQUIER PERSONA</span>
+          </div>
+          <h2 class="slide-title">
+            EVIDENCIA <span class="accent">QUE SÍ VA</span> EN STELLAR
+          </h2>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="panel-box featured">
+              <div class="panel-label">SMART CONTRACT EN STELLAR TESTNET</div>
+              <div class="hash-code" style="margin-bottom: 12px;">
+                CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO
+              </div>
+              <p class="text-body" style="font-size: 13px;">
+                • <strong>Wasm Bytecode Hash:</strong> <code>ba7d1753ecf00298...</code><br>
+                • <strong>Tx Registro en vivo:</strong> <code>725e126cc7998b79...</code> (Evento <code>work_reg</code>)<br>
+                • <strong>Tx Licencia de derechos:</strong> <code>30f6f7e9a1df1187...</code> (Evento <code>right_evt</code>)
+              </p>
+              <div style="margin-top: 12px;">
+                <a href="https://stellar.expert/explorer/testnet/contract/CAOAFGPATXWJ6KKGXFYHY42Q4N75NOWSR3NH3K2DT7QR3YSMDGT5P2HO" target="_blank" class="btn" style="font-size: 11px;">Ver en Stellar Expert ↗</a>
+              </div>
+            </div>
+
+            <div class="panel-box">
+              <div class="panel-label">REPOSITORIO & REPRODUCIBILIDAD</div>
+              <h4 style="font-family: var(--font-display); font-size: 18px; margin-bottom: 8px;">GitHub: nidaela/Authory</h4>
+              <p class="text-body" style="font-size: 13px; line-height: 1.6;">
+                • Next.js 16 (App Router) + React 19 + Tailwind CSS 4.<br>
+                • 9/9 suites de pruebas unitarias y focales passing.<br>
+                • Persistencia híbrida en Supabase y almacenamiento off-chain.<br>
+                • Despliegue en producción: <code>authority-khaki.vercel.app</code>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div>Lo que sobra: Capturas sin enlace o commits vacíos. Lo que vale: El hash consultable.</div>
+          <div class="time-badge">3:10 - 3:35 (25 s)</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 7: APRENDIZAJES Y VALIDACIÓN -->
+      <section class="slide" id="slide-7" data-time="25" data-title="Aprendizajes y Validación">
+        <div>
+          <div class="slide-tag">
+            <span class="badge badge-yellow">VALIDACIÓN HONESTA</span>
+            <span>LO QUE ES CIERTO Y LO QUE FALTA</span>
+          </div>
+          <h2 class="slide-title">
+            LO COMPROBADO <span class="cyan">Y LO POR COMPROBAR</span>
+          </h2>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-3">
+            <div class="panel-box">
+              <span class="badge badge-orange">«CREEMOS»</span>
+              <h4 style="margin: 12px 0 8px; font-family: var(--font-display);">HIPÓTESIS CRÍTICA</h4>
+              <p class="text-body" style="font-size: 13px;">
+                4 de cada 5 ilustradores independientes incluirán un enlace de Authory en sus presupuestos para protegerse de plagio.
+              </p>
+            </div>
+
+            <div class="panel-box featured">
+              <span class="badge badge-cyan">«OBSERVAMOS»</span>
+              <h4 style="margin: 12px 0 8px; font-family: var(--font-display);">AJUSTE INTERNO</h4>
+              <p class="text-body" style="font-size: 13px;">
+                Exigir wallet y gas en el onboarding expulsaba a creadores Web2. Ajustamos la UX para calcular SHA-256 en RAM instantáneamente.
+              </p>
+            </div>
+
+            <div class="panel-box success">
+              <span class="badge badge-green">«COMPROBAMOS»</span>
+              <h4 style="margin: 12px 0 8px; font-family: var(--font-display);">EVIDENCIA TÉCNICA</h4>
+              <p class="text-body" style="font-size: 13px;">
+                Smart contract propio de 5 métodos en Soroban ejecutando atestaciones inmutables en menos de 3 segundos sobre Testnet.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div>Decir con honestidad lo que falta no debilita la presentación: la hace creíble.</div>
+          <div class="time-badge">3:35 - 4:00 (25 s)</div>
+        </div>
+      </section>
+
+      <!-- SLIDE 8: SIGUIENTES PASOS & PEDIDO CONCRETO -->
+      <section class="slide" id="slide-8" data-time="30" data-title="Cierre y Pedido">
+        <div>
+          <div class="slide-tag">
+            <span class="badge badge-green">EL CIERRE DE LA HISTORIA</span>
+            <span>VOLVER AL USUARIO, NUNCA "¿PREGUNTAS?"</span>
+          </div>
+          <h2 class="slide-title">
+            EL FUTURO DE AUTHORY:<br>
+            <span class="accent">PEDIDO CONCRETO</span>
+          </h2>
+        </div>
+
+        <div class="slide-body">
+          <div class="grid-2">
+            <div class="panel-box featured">
+              <div class="panel-label">HOJA DE RUTA (PRÓXIMOS 30 DÍAS)</div>
+              <h3 class="panel-heading">Hacia la Autocustodia Web3</h3>
+              <p class="text-body" style="font-size: 14px; line-height: 1.6;">
+                1. Integrar <strong>Stellar Wallets Kit</strong> (Freighter, xBull, Lobstr) para que cada autor firme transacciones con su propia clave privada.<br>
+                2. Piloto controlado con 10 ilustradores independientes en Colombia y México.
+              </p>
+            </div>
+
+            <div class="panel-box alert">
+              <div class="panel-label">PEDIDO CONCRETO AL JURADO Y MENTORES</div>
+              <h3 class="panel-heading" style="color: var(--yellow);">¿Cómo nos pueden apoyar?</h3>
+              <p class="text-body" style="font-size: 15px; font-weight: 600; color: #fff;">
+                «Buscamos 5 agencias creativas y 10 creadores independientes que quieran proteger y certificar sus próximas 3 entregas comerciales con Authory.»
+              </p>
+            </div>
+          </div>
+
+          <div style="margin-top: 18px; padding: 12px; background: #030d17; border-left: 4px solid var(--success); font-size: 13px;">
+            🎨 <strong>La última imagen no es un contrato:</strong> Es Mateo cobrando su trabajo a tiempo y la editorial publicando con total tranquilidad jurídica.
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <div style="color: var(--success); font-weight: 700;">¡MUCHAS GRACIAS! · github.com/nidaela/Authory</div>
+          <div class="time-badge">4:00 - 4:30 (30 s)</div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Slide progress line -->
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+  </main>
+
+  <!-- Presenter Notes & Teleprompter Drawer -->
+  <section class="speech-drawer" id="speech-drawer">
+    <div class="speech-header">
+      <h3>
+        <span>🎙️ TELEPROMPTER DEL ORADOR · GUION DE LA DIAPOSITIVA</span>
+        <span id="speech-target-time" class="badge badge-yellow">Tiempo meta: 15 s</span>
+      </h3>
+      <span style="font-size: 12px; color: var(--ink-muted);">Presiona <span class="key-hint">S</span> para ocultar</span>
+    </div>
+
+    <div class="speech-content" id="speech-text">
+      Cargando notas...
+    </div>
+
+    <div class="action-guidance" id="action-guidance">
+      <div class="guide-box">
+        <strong>👁️ QUÉ SE VE EN PANTALLA:</strong>
+        <span id="guide-screen">Portada institucional de Authory.</span>
+      </div>
+      <div class="guide-box">
+        <strong>🧑‍💻 QUÉ HACE EL DRIVER:</strong>
+        <span id="guide-driver">Mantiene el proyector en foco, no toca nada.</span>
+      </div>
+      <div class="guide-box">
+        <strong>⚠️ PLAN B / CONTINGENCIA:</strong>
+        <span id="guide-planb">Ninguno, apertura limpia.</span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Slide Data & Speeches
+    const slidesData = [
+      {
+        index: 1,
+        title: "Portada & Contexto",
+        timeRange: "0:00 - 0:15 (15 s)",
+        targetSeconds: 15,
+        speech: "«Buenas tardes a todos. Mi nombre es [Tu Nombre], y hoy venimos a presentarles <strong>Authory</strong>: la infraestructura sobre la red Stellar para que los creadores independientes certifiquen su autoría y comercialicen sus derechos con total certeza.»",
+        screen: "Slide de portada con el look and feel brutalista en azul abisal y turquesa.",
+        driver: "Comprueba audio, pantalla completa con [F] y tiene abierta la pestaña de la demo lista.",
+        planB: "Si la pantalla no proyecta bien, recargar diapositivas."
+      },
+      {
+        index: 2,
+        title: "El Problema con Mateo",
+        timeRange: "0:15 - 0:45 (30 s)",
+        targetSeconds: 30,
+        speech: "«Les presento a Mateo. Mateo es un ilustrador independiente en Medellín. Hace tres meses invirtió semanas creando un set de personajes para una agencia. Entregó bocetos por correo y, cuando cancelaron el encargo aduciendo recorte de presupuesto, vio sus ilustraciones en vallas publicitarias sin su firma y sin un peso de regalías.<br><br>El caso de Mateo no es aislado: según la Freelancers Union, más del <em>71% de los creadores independientes sufren impago o plagio</em>. ¿Por qué no reclaman? Porque hoy sus únicas pruebas son fechas locales de archivos o cadenas de correos que cualquier peritaje descarta. Reclamar cuesta más que el proyecto.»",
+        screen: "Slide con el caso de Mateo y la estadística del 71%.",
+        driver: "Atento al ritmo del narrador. Mirada al público.",
+        planB: "Si alguien pide fuente: Reporte Freelancers Union & WIPO Creative Rights 2024."
+      },
+      {
+        index: 3,
+        title: "Dos Usuarios, Una Historia",
+        timeRange: "0:45 - 1:10 (25 s)",
+        targetSeconds: 25,
+        speech: "«Aquí intervienen dos partes con una fricción mutua: Mateo necesita una prueba de existencia inmutable desde el minuto cero; y del otro lado, las editoriales y compradores honestos necesitan comprobar en cinco segundos que quien les ofrece una obra tiene la titularidad legítima para licenciarla, sin tener que esperar semanas de trámites notariales.»",
+        screen: "Dos columnas: Mateo (Registra) vs Editorial (Consulta).",
+        driver: "Verifica que en la otra pestaña esté corriendo `authority-khaki.vercel.app`.",
+        planB: "Tener localhost:3000 listo por si se cae el wifi de la sala."
+      },
+      {
+        index: 4,
+        title: "Propuesta de Valor & ¿Por qué Blockchain?",
+        timeRange: "1:10 - 1:40 (30 s)",
+        targetSeconds: 30,
+        speech: "«<em>Para resolver esta asimetría y devolverle el control a los creadores, construimos Authory.</em><br>Para ilustradores como Mateo, Authory permite generar un pasaporte digital y un sello temporal inmutable en Stellar manteniendo el archivo original estrictamente confidencial.<br><br>Y aquí surge la pregunta inevitable: <em>¿Por qué blockchain y no una base de datos normal?</em> Porque en una base de datos tradicional la confianza depende del administrador. En la red Stellar, el sello queda anclado en un ledger distribuido que ninguna de las partes puede alterar y que cualquiera puede auditar sin pedir permiso. <em>Veamos exactamente cómo lo hace Mateo en Authory...</em>»",
+        screen: "Fórmula de propuesta de valor y recuadro '¿Por qué Blockchain?'.",
+        driver: "Prepara la ventana del navegador en `/registrar-obra` para la demo.",
+        planB: "Enlace verbal fluido hacia la demo."
+      },
+      {
+        index: 5,
+        title: "Demo en Vivo (El Flujo)",
+        timeRange: "1:40 - 3:10 (90 s)",
+        targetSeconds: 90,
+        speech: "«<em>(El driver comparte pantalla en Vercel)</em> Mateo entra a Authory y selecciona su archivo. En este milisegundo, el navegador ejecuta un cálculo criptográfico SHA-256 en su memoria local. Noten esto: el arte de Mateo no viaja por internet, su privacidad sigue intacta.<br><br>Al confirmar, Authory invoca nuestro contrato inteligente en Soroban Testnet. La red procesa la transacción y emite un evento inmutable con la estampa de tiempo del bloque.<br><br><em>(Driver pasa a /verificar)</em> Ahora somos la editorial. Llega el comprador a la pantalla de verificación pública y sube el archivo recibido. En menos de 3 segundos, Authory consulta la red: comprueba que el hash coincide exactamente con el registrado por Mateo y muestra su historial. La editorial tiene la certeza de contratar con el autor legítimo, y Mateo tiene una prueba irrefutable respaldándolo.»",
+        screen: "Driver compartiendo pantalla: Registro -> Hash -> Soroban -> /verificar.",
+        driver: "EJECUTA EN SILENCIO Y CON CALMA. NO HABLA. Deja que el narrador describa resultados.",
+        planB: "Si la red Testnet tarda >15s: Driver pasa al video de YouTube (minuto 1:15) ya abierto."
+      },
+      {
+        index: 6,
+        title: "Evidencia Técnica en Stellar",
+        timeRange: "3:10 - 3:35 (25 s)",
+        targetSeconds: 25,
+        speech: "«<em>¿Cómo comprueba cualquier persona en el mundo que esto no es un truco de interfaz? Aquí está el registro en la red pública de Stellar.</em><br>Nuestro contrato inteligente está desplegado en Soroban Testnet con la dirección CAOAFGP... Tenemos transacciones reales emitidas en vivo como 725e12..., el código fuente está abierto y documentado en nuestro repositorio con guías de reproducción paso a paso, y la aplicación está desplegada y accesible hoy mismo en Vercel.»",
+        screen: "Slide con hash del contrato en Soroban y enlaces a Stellar Expert.",
+        driver: "Si hay tiempo, muestra 5 segundos la pestaña de Stellar Expert con el evento emitido.",
+        planB: "El QR o enlace corto está en pantalla para los jurados que quieran escanear."
+      },
+      {
+        index: 7,
+        title: "Aprendizajes y Validación",
+        timeRange: "3:35 - 4:00 (25 s)",
+        targetSeconds: 25,
+        speech: "«Durante estas semanas aprendimos que la tecnología no sirve si genera fricción. En nuestras primeras pruebas descubrimos que exigirle al creador conectar una billetera con saldo de gas antes de registrar su primer dibujo hacía que el 80% abandonara. Por eso rediseñamos la experiencia: generamos el cálculo en el cliente y la evidencia de forma transparente.<br><br>Lo que <em>observamos</em> es que el creador busca simplicidad; lo que <em>comprobamos</em> es que el contrato ejecuta las atestaciones en menos de 3 segundos; y lo que <em>vamos a validar</em> con nuestro protocolo de 10 usuarios es que 4 de cada 5 incluirán este sello en sus cotizaciones comerciales.»",
+        screen: "3 columnas: Creemos (Hipótesis), Observamos (Recorrido interno), Comprobamos (Métrica).",
+        driver: "Vuelve a enfocar las diapositivas.",
+        planB: "Mantener el tono de honestidad técnica recomendado por Fer Tello."
+      },
+      {
+        index: 8,
+        title: "Cierre & Pedido Concreto",
+        timeRange: "4:00 - 4:30 (30 s)",
+        targetSeconds: 30,
+        speech: "«<em>Lo que sigue en los próximos 30 días es</em> integrar Stellar Wallets Kit para firma descentralizada nativa y lanzar nuestro primer piloto con comunidades creativas.<br><br>Por eso, hoy no venimos a decirles 'gracias, ¿alguna pregunta?'. Hoy venimos a hacerles un pedido concreto:<br><br><strong>Buscamos 5 agencias creativas y 10 creadores independientes que quieran proteger y certificar sus próximas 3 entregas con Authory.</strong><br><br>Ayúdennos a que ningún Mateo vuelva a perder los derechos sobre su propia obra. Muchas gracias.»",
+        screen: "Slide de cierre con la hoja de ruta, el pedido concreto y la despedida de impacto.",
+        driver: "Proyecta la imagen final de Mateo seguro con su obra.",
+        planB: "Cierre firme y seguro, sin muletillas."
+      }
+    ];
+
+    let currentSlide = 1;
+    const totalSlides = slidesData.length;
+    let timerInterval = null;
+    let secondsElapsed = 0;
+
+    // Elements
+    const slideNumEl = document.getElementById('slide-num');
+    const progressBar = document.getElementById('progress-bar');
+    const timeSpentEl = document.getElementById('time-spent');
+    const speechDrawer = document.getElementById('speech-drawer');
+    const speechTextEl = document.getElementById('speech-text');
+    const speechTargetTimeEl = document.getElementById('speech-target-time');
+    const guideScreenEl = document.getElementById('guide-screen');
+    const guideDriverEl = document.getElementById('guide-driver');
+    const guidePlanbEl = document.getElementById('guide-planb');
+    const btnSpeechToggle = document.getElementById('btn-speech-toggle');
+
+    function updateSlide(newIndex) {
+      if (newIndex < 1 || newIndex > totalSlides) return;
+
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      const activeSlide = document.getElementById(`slide-${newIndex}`);
+      if (activeSlide) activeSlide.classList.add('active');
+
+      currentSlide = newIndex;
+      slideNumEl.textContent = `${currentSlide} / ${totalSlides}`;
+      progressBar.style.width = `${(currentSlide / totalSlides) * 100}%`;
+
+      // Update Speech Drawer
+      const data = slidesData[currentSlide - 1];
+      if (data) {
+        speechTextEl.innerHTML = data.speech;
+        speechTargetTimeEl.textContent = `Tiempo meta: ${data.timeRange}`;
+        guideScreenEl.textContent = data.screen;
+        guideDriverEl.textContent = data.driver;
+        guidePlanbEl.textContent = data.planB;
+      }
+    }
+
+    // Navigation buttons
+    document.getElementById('btn-prev').addEventListener('click', () => updateSlide(currentSlide - 1));
+    document.getElementById('btn-next').addEventListener('click', () => updateSlide(currentSlide + 1));
+
+    // Speech Toggle
+    btnSpeechToggle.addEventListener('click', () => {
+      speechDrawer.classList.toggle('open');
+      btnSpeechToggle.classList.toggle('active');
+    });
+
+    // Fullscreen Toggle
+    document.getElementById('btn-fullscreen').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        updateSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'Backspace') {
+        e.preventDefault();
+        updateSlide(currentSlide - 1);
+      } else if (e.key === 's' || e.key === 'S') {
+        speechDrawer.classList.toggle('open');
+        btnSpeechToggle.classList.toggle('active');
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+    });
+
+    // Timer logic
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+        const secs = String(secondsElapsed % 60).padStart(2, '0');
+        timeSpentEl.textContent = `${mins}:${secs}`;
+
+        // Turn red if over 4m30s
+        if (secondsElapsed >= 270) {
+          timeSpentEl.style.color = 'var(--danger)';
+        } else if (secondsElapsed >= 240) {
+          timeSpentEl.style.color = 'var(--orange)';
+        }
+      }, 1000);
+    }
+
+    // Auto-start timer on first click/key
+    window.addEventListener('click', startTimer, { once: true });
+    window.addEventListener('keydown', startTimer, { once: true });
+
+    // Initial load
+    updateSlide(1);
+  </script>
+</body>
+</html>
